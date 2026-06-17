@@ -315,7 +315,7 @@ export function LockScreen({ memory, isOwner }: { memory: ClientMemory; isOwner:
               <button type="button" onClick={() => router.push("/")} className="flex-1 flex items-center justify-center gap-2 text-zinc-500 hover:text-white hover:bg-zinc-800/50 transition-all py-2.5 text-sm rounded-lg border border-zinc-800/50">
                 <Home className="w-3.5 h-3.5" /> Home
               </button>
-              {session && (
+              {user && (
                 <button type="button" onClick={() => router.push("/profile")} className="flex-1 flex items-center justify-center gap-2 text-zinc-500 hover:text-[#D4AF37] hover:bg-zinc-800/50 transition-all py-2.5 text-sm rounded-lg border border-zinc-800/50">
                   <User className="w-3.5 h-3.5" /> My Profile
                 </button>
@@ -347,7 +347,7 @@ export function LockScreen({ memory, isOwner }: { memory: ClientMemory; isOwner:
           <button onClick={() => router.push("/")} className="p-3 bg-white/5 hover:bg-white/10 rounded-full transition-colors border border-white/10 text-white" title="Home">
             <Home className="w-5 h-5" />
           </button>
-          {session && (
+          {user && (
             <button onClick={() => router.push("/profile")} className="p-3 bg-white/5 hover:bg-white/10 rounded-full transition-colors border border-white/10 text-white" title="My Profile">
               <User className="w-5 h-5" />
             </button>
