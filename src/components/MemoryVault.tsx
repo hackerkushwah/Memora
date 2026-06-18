@@ -19,9 +19,9 @@ export function MemoryVault({ memories }: Props) {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1, duration: 0.6 }}
-              className="relative group cursor-pointer overflow-hidden rounded-xl border border-white/10"
+              className="relative group cursor-pointer flex flex-col"
             >
-              <div className="relative aspect-[4/5] w-full">
+              <div className="relative aspect-[4/5] w-full overflow-hidden rounded-xl border border-white/10">
                 {memory.imageUrls && memory.imageUrls.length > 1 && (
                   <div className="absolute top-3 right-3 z-10 bg-black text-white text-[10px] uppercase font-bold px-2 py-1 rounded border border-white/20">
                     +{memory.imageUrls.length - 1} Photos
@@ -47,6 +47,16 @@ export function MemoryVault({ memories }: Props) {
                     </span>
                   )}
                 </div>
+              </div>
+              
+              {/* Stack Info Below */}
+              <div className="mt-4 px-1">
+                <h3 className="text-white font-serif text-lg truncate group-hover:text-[#D4AF37] transition-colors">{memory.title}</h3>
+                {memory.description && (
+                  <p className="text-zinc-400 text-sm line-clamp-2 mt-1.5 leading-relaxed">
+                    {memory.description}
+                  </p>
+                )}
               </div>
             </motion.div>
           </Link>
