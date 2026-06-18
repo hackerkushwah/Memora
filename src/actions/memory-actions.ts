@@ -167,7 +167,7 @@ export async function uploadMemories(formData: FormData): Promise<{ success: boo
 
     const title = formData.get("title") as string;
     const description = formData.get("description") as string || "";
-    const category = formData.get("category") as string || "The Journey";
+    const category = formData.get("category") as string || "🎓 College";
     const password = formData.get("password") as string;
     // Images are now URLs (uploaded client-side to Supabase Storage)
     const imageUrls = formData.getAll("imageUrls") as string[];

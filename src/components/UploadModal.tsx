@@ -27,7 +27,7 @@ export function UploadModal({ isOpen, onClose }: Props) {
   };
   const [formData, setFormData] = useState({
     title: "",
-    category: "The Journey",
+    category: "🎓 College",
     description: "",
     password: "",
   });
@@ -99,7 +99,7 @@ export function UploadModal({ isOpen, onClose }: Props) {
       setUploadProgress(100);
 
       if (result.success) {
-        setFormData({ title: "", category: "The Journey", description: "", password: "" });
+        setFormData({ title: "", category: "🎓 College", description: "", password: "" });
         setFilesSelected([]);
         setImageDescriptions([]);
         onClose();
@@ -178,10 +178,12 @@ export function UploadModal({ isOpen, onClose }: Props) {
                   onChange={(e) => setFormData({ ...formData, category: e.target.value })}
                   className="flex-1 bg-zinc-950 border border-zinc-800 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-zinc-500 transition-colors text-sm"
                 >
-                  <option value="The Journey">The Journey</option>
-                  <option value="Yearbook">Yearbook</option>
-                  <option value="Media Vault">Media Vault</option>
-                  <option value="The Wall">The Wall</option>
+                  <option value="🎓 College">🎓 College</option>
+                  <option value="❤️ Us">❤️ Us</option>
+                  <option value="📸 Moments">📸 Moments</option>
+                  <option value="✈️ Travel">✈️ Travel</option>
+                  <option value="🌙 Unforgettable">🌙 Unforgettable</option>
+                  <option value="✨ Forever">✨ Forever</option>
                 </select>
               </div>
 

@@ -8,7 +8,10 @@ import { ClientMemory } from "@/lib/data";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ChevronDown, Mouse } from "lucide-react";
 
+const CATEGORIES = ["All", "🎓 College", "❤️ Us", "📸 Moments", "✈️ Travel", "🌙 Unforgettable", "✨ Forever"];
+
 export default function HomeClient({ initialMemories }: { initialMemories: ClientMemory[] }) {
+  const [activeCategory, setActiveCategory] = useState("All");
   const [isUploadOpen, setIsUploadOpen] = useState(false);
   const vaultRef = useRef<HTMLDivElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -167,7 +170,7 @@ export default function HomeClient({ initialMemories }: { initialMemories: Clien
 
       {/* VAULT SECTION */}
       <section ref={vaultRef} className="w-full min-h-screen bg-gradient-to-b from-[#070211] to-[#000000] pt-24 pb-32 relative z-20">
-        <div className="text-center mb-24 px-6">
+        <div className="text-center mb-16 px-6">
           <motion.div
              initial={{ opacity: 0, y: 30 }}
              whileInView={{ opacity: 1, y: 0 }}
@@ -175,10 +178,28 @@ export default function HomeClient({ initialMemories }: { initialMemories: Clien
              transition={{ duration: 1 }}
           >
             <h3 className="font-serif text-3xl md:text-5xl lg:text-6xl text-[#D4AF37] drop-shadow-[0_0_20px_rgba(212,175,55,0.7)] mb-8 tracking-wide font-light">Proof That We Lived</h3>
+            
+            {/* Category Tabs */}
+            <div className="flex flex-wrap justify-center gap-3 mb-10 max-w-4xl mx-auto">
+              {CATEGORIES.map((cat) => (
+                <button
+                  key={cat}
+                  onClick={() => setActiveCategory(cat)}
+                  className={`px-5 py-2 rounded-full text-sm font-semibold transition-all duration-300 ${
+                    activeCategory === cat 
+                      ? 'bg-[#D4AF37] text-black shadow-[0_0_15px_rgba(212,175,55,0.4)]' 
+                      : 'bg-zinc-900/50 text-zinc-400 hover:text-white hover:bg-zinc-800 border border-white/5'
+                  }`}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
+
             <div className="w-12 h-[1px] bg-white mx-auto opacity-30" />
           </motion.div>
         </div>
-        <MemoryVault memories={initialMemories} />
+        <MemoryVault memories={activeCategory === "All" ? initialMemories : initialMemories.filter(m => m.category === activeCategory)} />
       </section>
 
       <UploadModal isOpen={isUploadOpen} onClose={() => setIsUploadOpen(false)} />
