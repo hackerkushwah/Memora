@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { ClientMemory } from "@/lib/data";
 import { getMyMemories } from "@/actions/memory-actions";
 import { MemoryVault } from "@/components/MemoryVault";
-import { Loader2, User } from "lucide-react";
+import { Loader2, User, ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export default function ProfilePage() {
@@ -40,6 +40,15 @@ export default function ProfilePage() {
     <main className="min-h-screen bg-[#050505] pt-24 pb-12 px-4 sm:px-6">
       <div className="max-w-7xl mx-auto">
         
+        {/* Back Button */}
+        <button 
+          onClick={() => router.push("/")} 
+          className="mb-8 flex items-center gap-2 text-zinc-400 hover:text-[#D4AF37] transition-colors"
+        >
+          <ArrowLeft className="w-5 h-5" />
+          <span className="font-medium">Go Back</span>
+        </button>
+
         {/* Profile Header */}
         <div className="flex flex-col md:flex-row items-center gap-6 mb-16 bg-zinc-900/40 p-8 md:p-12 rounded-[2.5rem] border border-white/5 shadow-2xl relative overflow-hidden">
           {/* Decorative Background Element */}
