@@ -1,25 +1,53 @@
 "use server";
+import nodemailer from "nodemailer";
 
 export async function submitContactForm(formData: FormData) {
-  // Mock delay to simulate network request
-  await new Promise((resolve) => setTimeout(resolve, 1500));
-
-  const name = formData.get("name");
-  const email = formData.get("email");
-  const subject = formData.get("subject");
-  const message = formData.get("message");
+  const name = formData.get("name") as string;
+  const email = formData.get("email") as string;
+  const subject = formData.get("subject") as string;
+  const message = formData.get("message") as string;
 
   if (!name || !email || !subject || !message) {
     return { error: "All fields are required." };
   }
 
-  // Basic email validation
-  if (!/^\S+@\S+\.\S+$/.test(email as string)) {
+  if (!/^\S+@\S+\.\S+$/.test(email)) {
     return { error: "Please enter a valid email address." };
   }
 
-  // In a real application, you would send this via nodemailer, Resend, or save to DB.
-  console.log("Mock Contact Submission:", { name, email, subject, message });
+  // Check if email environment variables exist
+  const SMTP_EMAIL = process.env.SMTP_EMAIL;
+  const SMTP_PASSWORD = process.env.SMTP_PASSWORD;
 
-  return { success: true };
+  if (!SMTP_EMAIL || !SMTP_PASSWORD) {
+    // Fallback to mock mode if credentials are not configured to prevent crashes
+    console.warn("SMTP credentials not configured in .env.local. Falling back to mock submission.");
+    console.log("Mock Contact Submission:", { name, email, subject, message });
+    return { success: true };
+  }
+
+  try {
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: SMTP_EMAIL,
+        pass: SMTP_PASSWORD,
+      },
+    });
+
+    const mailOptions = {
+      from: SMTP_EMAIL,
+      to: SMTP_EMAIL, // Send it to yourself
+      replyTo: email, // So you can hit 'reply' and it goes to the user
+      subject: `Memora Contact: ${subject}`,
+      text: `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`,
+    };
+
+    await transporter.sendMail(mailOptions);
+    return { success: true };
+  } catch (error) {
+    console.error("Error sending email:", error);
+    // Return a friendly error to the user without crashing the site
+    return { error: "There was an issue sending your message. Please try again later." };
+  }
 }
