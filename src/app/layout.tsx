@@ -17,9 +17,29 @@ const cursive = Dancing_Script({
   subsets: ["latin"],
 });
 
+import { Footer } from "@/components/Footer";
+
 export const metadata: Metadata = {
-  title: "Memora | Proof That We Lived",
-  description: "Memora - The Eternal Batch. Preserve moments. Relive emotions. Forever.",
+  metadataBase: new URL("https://memora.app"),
+  title: {
+    default: "Memora | Proof That We Lived",
+    template: "%s | Memora",
+  },
+  description: "Memora - The Eternal Batch. Preserve your most precious moments and relive emotions forever. A digital vault for your memories.",
+  keywords: ["memories", "digital vault", "journal", "preserve moments", "photo storage"],
+  openGraph: {
+    title: "Memora | Proof That We Lived",
+    description: "Preserve your most precious moments and relive emotions forever. A digital vault for your memories.",
+    url: "https://memora.app",
+    siteName: "Memora",
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Memora | Proof That We Lived",
+    description: "Preserve your most precious moments and relive emotions forever.",
+  },
 };
 
 export default function RootLayout({
@@ -39,8 +59,9 @@ export default function RootLayout({
           crossOrigin="anonymous"
         ></script>
       </head>
-      <body className="min-h-full flex flex-col bg-pure-black text-white">
+      <body className="min-h-full flex flex-col bg-pure-black text-white selection:bg-white/20 selection:text-white">
         {children}
+        <Footer />
       </body>
     </html>
   );
