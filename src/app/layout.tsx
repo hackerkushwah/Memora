@@ -32,6 +32,13 @@ export default function RootLayout({
       lang="en"
       className={`${inter.variable} ${playfair.variable} ${cursive.variable} h-full antialiased dark`}
     >
+      <head>
+        <script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8131387574460691"
+          crossOrigin="anonymous"
+        ></script>
+      </head>
       <body className="min-h-full flex flex-col bg-pure-black text-white">
         {children}
       </body>
