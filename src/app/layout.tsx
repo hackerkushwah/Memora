@@ -53,6 +53,7 @@ export default function RootLayout({
       className={`${inter.variable} ${playfair.variable} ${cursive.variable} h-full antialiased dark`}
     >
       <head>
+        <meta name="google-site-verification" content="sTQMpU0ds5d7tYV8NpikrwXlkP-8jtlEhUsbTgbFa-s" />
         <script
           async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8131387574460691"
