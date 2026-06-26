@@ -71,7 +71,7 @@ export default function HomeClient({ initialMemories }: { initialMemories: Clien
       {/* 3D TUNNEL CONTAINER - 500vh tall to allow deep scrolling */}
       <div ref={scrollRef} className="relative w-full h-[500vh] bg-black">
         {/* Sticky viewport that renders the 3D scene */}
-        <div className="sticky top-0 w-full h-screen overflow-hidden flex items-center justify-center [perspective:1200px]">
+        <div className="sticky top-0 w-full h-[100dvh] overflow-hidden flex items-center justify-center [perspective:1200px]">
           <motion.div style={{ opacity: tunnelOpacity }} className="absolute inset-0 w-full h-full flex items-center justify-center [transform-style:preserve-3d]">
             
             {/* Background Base with faint noise overlay */}

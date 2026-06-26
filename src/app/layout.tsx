@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Inter, Playfair_Display, Dancing_Script } from "next/font/google";
 import "./globals.css";
 
@@ -77,11 +78,12 @@ export default function RootLayout({
     >
       <head>
         <meta name="google-site-verification" content="sTQMpU0ds5d7tYV8NpikrwXlkP-8jtlEhUsbTgbFa-s" />
-        <script
+        <Script
           async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8131387574460691"
           crossOrigin="anonymous"
-        ></script>
+          strategy="afterInteractive"
+        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
