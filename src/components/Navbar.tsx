@@ -6,7 +6,7 @@ import { useSupabaseSession } from "@/lib/useSupabaseSession";
 import { supabaseClient } from "@/lib/supabase-client";
 import Link from "next/link";
 
-export function Navbar({ onUploadClick }: { onUploadClick: () => void }) {
+export function Navbar({ onUploadClick }: { onUploadClick?: () => void }) {
   const { user } = useSupabaseSession();
 
   const handleSignIn = async () => {
@@ -38,13 +38,23 @@ export function Navbar({ onUploadClick }: { onUploadClick: () => void }) {
           </div>
         </Link>
         <div className="flex items-center gap-2 sm:gap-4 shrink-0">
-          <button
-            onClick={onUploadClick}
-            className="bg-transparent border border-white text-white hover:bg-white hover:text-black transition-all duration-500 px-3 py-1.5 sm:px-5 sm:py-2 rounded-full font-bold uppercase tracking-widest text-xs sm:text-sm shrink-0 whitespace-nowrap"
-          >
-            <span className="hidden sm:inline">+ Vault Memory</span>
-            <span className="sm:hidden">+ Vault</span>
-          </button>
+          {onUploadClick ? (
+            <button
+              onClick={onUploadClick}
+              className="bg-transparent border border-white text-white hover:bg-white hover:text-black transition-all duration-500 px-3 py-1.5 sm:px-5 sm:py-2 rounded-full font-bold uppercase tracking-widest text-xs sm:text-sm shrink-0 whitespace-nowrap"
+            >
+              <span className="hidden sm:inline">+ Vault Memory</span>
+              <span className="sm:hidden">+ Vault</span>
+            </button>
+          ) : (
+            <Link
+              href="/"
+              className="bg-transparent border border-white text-white hover:bg-white hover:text-black transition-all duration-500 px-3 py-1.5 sm:px-5 sm:py-2 rounded-full font-bold uppercase tracking-widest text-xs sm:text-sm shrink-0 whitespace-nowrap"
+            >
+              <span className="hidden sm:inline">+ Vault Memory</span>
+              <span className="sm:hidden">+ Vault</span>
+            </Link>
+          )}
           
           {user ? (
             <div className="flex items-center gap-2 sm:gap-3">

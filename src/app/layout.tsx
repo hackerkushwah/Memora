@@ -47,9 +47,32 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const schema = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "https://memora.app/#organization",
+        "name": "Memora",
+        "url": "https://memora.app",
+        "logo": "https://memora.app/icon.png"
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://memora.app/#website",
+        "url": "https://memora.app",
+        "name": "Memora",
+        "publisher": {
+          "@id": "https://memora.app/#organization"
+        }
+      }
+    ]
+  };
+
   return (
     <html
       lang="en"
+      suppressHydrationWarning
       className={`${inter.variable} ${playfair.variable} ${cursive.variable} h-full antialiased dark`}
     >
       <head>
@@ -59,8 +82,12 @@ export default function RootLayout({
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8131387574460691"
           crossOrigin="anonymous"
         ></script>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+        />
       </head>
-      <body className="min-h-full flex flex-col bg-pure-black text-white selection:bg-white/20 selection:text-white">
+      <body suppressHydrationWarning className="min-h-full flex flex-col bg-pure-black text-white selection:bg-white/20 selection:text-white">
         {children}
         <Footer />
       </body>

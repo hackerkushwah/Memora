@@ -26,7 +26,7 @@ console.log("");
 
 // Run Next.js dev server (inherits stdio so output streams through)
 try {
-  execSync("npx next dev --turbopack -H 0.0.0.0", {
+  execSync("npx next dev -H 0.0.0.0", {
     stdio: "inherit",
     cwd: process.cwd(),
   });
