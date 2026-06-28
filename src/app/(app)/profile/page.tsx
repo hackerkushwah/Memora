@@ -90,7 +90,7 @@ export default function ProfilePage() {
               <p className="text-zinc-500">You haven't vaulted any memories yet.</p>
             </div>
           ) : (
-            <div className="-mt-24">
+            <div className="pt-6">
               <MemoryVault memories={myMemories} />
             </div>
           )}

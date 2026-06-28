@@ -27,7 +27,7 @@ export function MemoryVault({ memories }: Props) {
       <div className="w-full max-w-5xl mx-auto pt-12 pb-24 px-6">
         <div className="text-center mb-16">
           <h2 className="text-3xl font-semibold mb-4 tracking-tight">Welcome to Memora</h2>
-          <p className="text-zinc-400 max-w-lg mx-auto">Your vault is currently empty. Start building your digital legacy by capturing your first memory today, or explore a demo vault.</p>
+          <p className="text-zinc-400 max-w-lg mx-auto">Your vault is currently empty. Start building your digital legacy by capturing your first memory today.</p>
         </div>
 
         <div className="flex flex-col md:flex-row items-center justify-center gap-6 mb-16">
@@ -37,13 +37,6 @@ export function MemoryVault({ memories }: Props) {
           >
             <Plus className="w-5 h-5" />
             Upload First Memory
-          </button>
-          <button 
-            onClick={() => setIsDemoMode(true)}
-            className="w-full md:w-auto px-8 py-4 bg-[#0A0A0A] border border-white/10 text-white font-medium rounded-full hover:bg-white/5 transition-colors flex items-center justify-center gap-2"
-          >
-            <Compass className="w-5 h-5" />
-            Explore Demo Vault
           </button>
         </div>
 
