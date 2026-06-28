@@ -1,6 +1,8 @@
 "use client";
 
 import { useSupabaseSession } from "@/lib/useSupabaseSession";
+import { supabaseClient } from "@/lib/supabase-client";
+import { LogOut } from "lucide-react";
 
 export default function SettingsPage() {
   const { user } = useSupabaseSession();
@@ -31,6 +33,16 @@ export default function SettingsPage() {
             <label className="block text-sm text-white/50 mb-2">Data Export</label>
             <button className="px-6 py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl transition-colors text-sm text-white">
               Request Full Archive
+            </button>
+          </div>
+          <div className="pt-6 border-t border-white/10">
+            <label className="block text-sm text-white/50 mb-2">Session</label>
+            <button 
+              onClick={() => supabaseClient.auth.signOut()}
+              className="flex items-center gap-2 px-6 py-3 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 rounded-xl transition-colors text-sm font-medium"
+            >
+              <LogOut className="w-4 h-4" />
+              Sign Out
             </button>
           </div>
         </div>
