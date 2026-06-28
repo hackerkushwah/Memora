@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Script from "next/script";
-import { Inter, Playfair_Display, Dancing_Script } from "next/font/google";
+import { Inter, Instrument_Serif, Dancing_Script } from "next/font/google";
 import "./globals.css";
 
 const inter = Inter({
@@ -8,8 +8,9 @@ const inter = Inter({
   subsets: ["latin"],
 });
 
-const playfair = Playfair_Display({
-  variable: "--font-playfair",
+const instrument = Instrument_Serif({
+  variable: "--font-playfair", // Keeping the variable name playfair to avoid breaking existing styles if any, but using Instrument Serif
+  weight: "400",
   subsets: ["latin"],
 });
 
@@ -71,11 +72,11 @@ export default function RootLayout({
   };
 
   return (
-    <html
-      lang="en"
-      suppressHydrationWarning
-      className={`${inter.variable} ${playfair.variable} ${cursive.variable} h-full antialiased dark`}
-    >
+      <html
+        lang="en"
+        suppressHydrationWarning
+        className={`${inter.variable} ${instrument.variable} ${cursive.variable} h-full antialiased dark`}
+      >
       <head>
         <meta name="google-site-verification" content="sTQMpU0ds5d7tYV8NpikrwXlkP-8jtlEhUsbTgbFa-s" />
         <Script
@@ -89,7 +90,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
         />
       </head>
-      <body suppressHydrationWarning className="min-h-full flex flex-col bg-pure-black text-white selection:bg-white/20 selection:text-white">
+      <body suppressHydrationWarning className="min-h-full flex flex-col bg-[#050505] text-[#FFFFFF] selection:bg-white/20 selection:text-white">
         {children}
         <Footer />
       </body>

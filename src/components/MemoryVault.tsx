@@ -16,10 +16,10 @@ export function MemoryVault({ memories }: Props) {
   const [isDemoMode, setIsDemoMode] = useState(false);
 
   const demoMemories: ClientMemory[] = [
-    { id: "d1", title: "Our Wedding Day", description: "The most magical day of our lives. Surrounded by family and friends under the old oak tree.", category: "✨ Forever", imageUrls: ["/demo1.jpg"], thumbnailUrl: "", uploadedBy: "demo", date: "2026-06-28" },
-    { id: "d2", title: "Trip to Kyoto", description: "Walking through the bamboo forest at dawn. The light was incredible.", category: "✈️ Travel", imageUrls: ["/demo2.jpg"], thumbnailUrl: "", uploadedBy: "demo", date: "2026-06-28" },
-    { id: "d3", title: "College Graduation", description: "Four years of hard work finally paid off. Mom and Dad were so proud.", category: "🎓 College", imageUrls: ["/demo3.jpg"], thumbnailUrl: "", uploadedBy: "demo", date: "2026-06-28" },
-    { id: "d4", title: "First Apartment", description: "It's small and the heater barely works, but it's ours.", category: "📸 Moments", imageUrls: ["/demo4.jpg"], thumbnailUrl: "", uploadedBy: "demo", date: "2026-06-28" }
+    { id: "d1", title: "Our Wedding Day", description: "The most magical day of our lives. Surrounded by family and friends under the old oak tree.", category: "✨ Forever", imageUrls: ["/demo1.jpg"], thumbnailUrl: "/demo1.jpg", uploadedBy: "demo", date: "2026-06-28" },
+    { id: "d2", title: "Trip to Kyoto", description: "Walking through the bamboo forest at dawn. The light was incredible.", category: "✈️ Travel", imageUrls: ["/demo2.jpg"], thumbnailUrl: "/demo2.jpg", uploadedBy: "demo", date: "2026-06-28" },
+    { id: "d3", title: "College Graduation", description: "Four years of hard work finally paid off. Mom and Dad were so proud.", category: "🎓 College", imageUrls: ["/demo3.jpg"], thumbnailUrl: "/demo3.jpg", uploadedBy: "demo", date: "2026-06-28" },
+    { id: "d4", title: "First Apartment", description: "It's small and the heater barely works, but it's ours.", category: "📸 Moments", imageUrls: ["/demo4.jpg"], thumbnailUrl: "/demo4.jpg", uploadedBy: "demo", date: "2026-06-28" }
   ];
 
   if (memories.length === 0 && !isDemoMode) {
@@ -106,8 +106,8 @@ export function MemoryVault({ memories }: Props) {
       )}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 px-4 sm:px-6">
-        {displayMemories.map((memory, index) => (
-          <Link key={memory.id} href={`/memory/${memory.id}`} className="block group">
+        {displayMemories.map((memory, index) => {
+          const content = (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -157,8 +157,22 @@ export function MemoryVault({ memories }: Props) {
                 )}
               </div>
             </motion.div>
-          </Link>
-        ))}
+          );
+
+          if (isDemoMode || memory.id.startsWith("d")) {
+            return (
+              <div key={memory.id} onClick={() => alert("Please sign up to view full memory details in your own vault!")} className="block group">
+                {content}
+              </div>
+            );
+          }
+
+          return (
+            <Link key={memory.id} href={`/memory/${memory.id}`} className="block group">
+              {content}
+            </Link>
+          );
+        })}
       </div>
     </>
   );

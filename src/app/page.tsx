@@ -1,5 +1,5 @@
 import { getMemories } from "@/actions/memory-actions";
-import HomeClient from "@/components/HomeClient";
+import { HomeClient } from "@/components/HomeClient";
 import { CursorGlow } from "@/components/CursorGlow";
 
 // This opts Next.js out of static caching for this route so uploaded images show immediately.

@@ -1,433 +1,476 @@
 "use client";
 
-import { useState, useRef } from "react";
-import { Navbar } from "@/components/Navbar";
-import { UploadModal } from "@/components/UploadModal";
-import { MemoryVault } from "@/components/MemoryVault";
+import { motion } from "framer-motion";
 import { ScrollReveal } from "@/components/ScrollReveal";
-import { ClientMemory } from "@/lib/data";
-import { motion, useScroll, useTransform } from "framer-motion";
-import { 
-  ArrowRight, Shield, Zap, Sparkles, Brain, 
-  Search, Lock, Heart, FileImage, FileText, 
-  CheckCircle2, Star, PlayCircle, ChevronDown
-} from "lucide-react";
+import { ArrowRight, Lock, Search, Folder, Shield, Zap, Heart, CheckCircle2, Play, ChevronDown, Clock, Brain, Camera, Layout, Crown } from "lucide-react";
 import Link from "next/link";
+import { ClientMemory } from "@/lib/data";
+import { MemoryVault } from "./MemoryVault";
+import { supabaseClient } from "@/lib/supabase-client";
 
-const CATEGORIES = ["All", "🎓 College", "❤️ Us", "📸 Moments", "✈️ Travel", "🌙 Unforgettable", "✨ Forever"];
+const faqs = [
+  { q: "What is Memora?", a: "Memora is an intelligent, encrypted digital memory vault designed to preserve your photos, videos, and journal entries with emotional context, ensuring your memories last forever." },
+  { q: "How is it different from Google Photos or iCloud?", a: "Unlike traditional galleries that dump thousands of photos into an endless grid, Memora focuses on curation, emotional storytelling, and absolute privacy with zero-knowledge encryption." },
+  { q: "Is my data secure?", a: "Yes. Your data is encrypted locally on your device before it ever reaches our servers using AES-256 encryption. We cannot view, scan, or sell your memories." },
+  { q: "Can I search my memories?", a: "Absolutely. Memora features a powerful, semantic search engine that lets you find memories based on context, dates, emotions, and people." },
+  { q: "Who owns my data?", a: "You do. You retain 100% ownership of everything you upload. You can export your entire vault in open formats at any time." },
+  { q: "Do you compress my photos?", a: "No. We believe your memories should remain pristine. We store the original, full-resolution files without any lossy compression." },
+  { q: "Is there a mobile app?", a: "Memora is a Progressive Web App (PWA). It installs directly from your browser to your home screen and behaves exactly like a native app." },
+  { q: "What happens to my vault if I pass away?", a: "We are actively developing a Legacy Protocol that acts as a cryptographic dead-man's switch, releasing your vault to designated heirs." },
+];
 
-const FADE_UP: any = {
-  hidden: { opacity: 0, y: 30 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
-};
+const testimonials = [
+  { quote: "Placeholder testimonial demonstrating how Memora changed my approach to digital preservation. Truly remarkable.", author: "Future User", role: "Photographer" },
+  { quote: "Placeholder testimonial. Finally, a place where my memories feel respected rather than commodified.", author: "Future User", role: "Designer" },
+  { quote: "Placeholder testimonial. The search and organization capabilities are exactly what I've been looking for.", author: "Future User", role: "Writer" }
+];
 
-const STAGGER: any = {
-  hidden: { opacity: 0 },
-  show: { transition: { staggerChildren: 0.1 } }
-};
+export function HomeClient({ initialMemories }: { initialMemories: ClientMemory[] }) {
+  const handleSignIn = async () => {
+    await supabaseClient.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`,
+      },
+    });
+  };
 
-export default function HomeClient({ initialMemories }: { initialMemories: ClientMemory[] }) {
-  const [activeCategory, setActiveCategory] = useState("All");
-  const [isUploadOpen, setIsUploadOpen] = useState(false);
-  const scrollRef = useRef<HTMLDivElement>(null);
-
-  const { scrollYProgress } = useScroll({
-    target: scrollRef,
-    offset: ["start start", "end end"]
-  });
-
-  // 3D Transforms based on scrollYProgress (0 to 1)
-  const textX1 = useTransform(scrollYProgress, [0, 1], ["20%", "-100%"]);
-  const textX2 = useTransform(scrollYProgress, [0, 1], ["-80%", "50%"]);
-  const textScale = useTransform(scrollYProgress, [0, 0.5, 1], [1, 1.2, 0.9]);
-
-  const img1Z = useTransform(scrollYProgress, [0, 1], [-1200, 600]);
-  const img1Y = useTransform(scrollYProgress, [0, 1], [500, -1000]);
-  const img1Rotate = useTransform(scrollYProgress, [0, 1], [-10, 5]);
-
-  const img2Z = useTransform(scrollYProgress, [0, 0.8], [-2000, 400]);
-  const img2RotateY = useTransform(scrollYProgress, [0, 0.8], [30, -30]);
-  const img2Y = useTransform(scrollYProgress, [0, 0.8], [-800, 800]);
-
-  const img3Scale = useTransform(scrollYProgress, [0, 0.9], [0.3, 2.5]);
-  const img3Opacity = useTransform(scrollYProgress, [0.2, 0.5, 0.8], [0, 1, 0]);
-  const img3RotateZ = useTransform(scrollYProgress, [0.2, 0.9], [0, 15]);
-
-  const img4Z = useTransform(scrollYProgress, [0.1, 0.9], [-3000, 1500]);
-  const img4X = useTransform(scrollYProgress, [0.1, 0.9], [800, -500]);
-
-  const tunnelOpacity = useTransform(scrollYProgress, [0.85, 1], [1, 0]);
-
-  // If user has memories, they shouldn't just see the landing page, 
-  // but for the sake of the requirement, the landing page is public marketing.
-  // Actually, if we have initialMemories.length > 0, we could show the vault directly 
-  // or let them scroll. Let's make the vault accessible at the top or bottom, 
-  // or use a separate Dashboard view. The request asks for a Landing Page Redesign.
-  // We'll keep the landing page as the primary marketing material.
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": faqs.map(faq => ({
+      "@type": "Question",
+      "name": faq.q,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": faq.a
+      }
+    }))
+  };
 
   return (
-    <>
-      <Navbar onUploadClick={() => setIsUploadOpen(true)} />
-
-      {/* 3D TUNNEL CONTAINER - 500vh tall to allow deep scrolling */}
-      <div ref={scrollRef} className="relative w-full h-[500vh] bg-black">
-        {/* Sticky viewport that renders the 3D scene */}
-        <div className="sticky top-0 w-full h-[100dvh] overflow-hidden flex items-center justify-center [perspective:1200px]">
-          <motion.div style={{ opacity: tunnelOpacity }} className="absolute inset-0 w-full h-full flex items-center justify-center [transform-style:preserve-3d]">
-            
-            {/* Background Base with faint noise overlay */}
-            <div className="absolute inset-0 bg-[#020005]" />
-            
-            {/* Royal Ambient Glows */}
-            <div className="absolute top-[10%] left-[-10%] w-[40vw] h-[40vw] bg-[#3C1053] opacity-30 blur-[120px] rounded-full mix-blend-screen pointer-events-none" />
-            <div className="absolute bottom-[20%] right-[-10%] w-[50vw] h-[50vw] bg-[#0A192F] opacity-40 blur-[150px] rounded-full mix-blend-screen pointer-events-none" />
-
-            <div className="absolute inset-0 bg-white/5 mix-blend-overlay noise-overlay" />
-
-            {/* BACKGROUND TEXT */}
-            <motion.div 
-              style={{ x: textX1, scale: textScale, z: -1000 }} 
-              className="absolute top-[30%] left-0 whitespace-nowrap opacity-20 pointer-events-none"
-            >
-              <h1 className="font-serif text-[20vw] text-white font-black tracking-tighter mix-blend-overlay">
-                THE ETERNAL BATCH • 2026
-              </h1>
-            </motion.div>
-
-            {/* 3D IMAGE 4 */}
-            <motion.div 
-               style={{ z: img4Z, x: img4X }} 
-               className="absolute right-[-10%] top-1/4 w-[40vw] md:w-[25vw] will-change-transform transform-gpu"
-            >
-              <img src="/3d_4.png" alt="Memory Segment 4" className="w-full h-auto rounded-xl shadow-lg md:shadow-[0_0_80px_rgba(255,255,255,0.03)] grayscale border border-white/5 transform-gpu" />
-            </motion.div>
-
-            {/* 3D IMAGE 2 */}
-            <motion.div 
-               style={{ z: img2Z, rotateY: img2RotateY, y: img2Y }} 
-               className="absolute right-[5%] top-[10%] w-[45vw] md:w-[30vw] opacity-90 will-change-transform transform-gpu"
-            >
-              <img src="/3d_2.png" alt="Memory Segment 2" className="w-full h-auto rounded-3xl shadow-xl md:shadow-[0_20px_100px_rgba(255,255,255,0.06)] grayscale border border-white/10 transform-gpu" />
-            </motion.div>
-
-            {/* 3D IMAGE 1 */}
-            <motion.div 
-               style={{ z: img1Z, y: img1Y, rotateZ: img1Rotate }} 
-               className="absolute left-[2%] md:left-[10%] top-[60%] w-[55vw] md:w-[35vw] will-change-transform transform-gpu"
-            >
-              <img src="/3d_1.png" alt="Memory Segment 1" className="w-full h-auto rounded-2xl shadow-xl md:shadow-[0_0_80px_rgba(255,255,255,0.08)] opacity-95 border border-zinc-800 transform-gpu" />
-            </motion.div>
-
-            {/* FOREGROUND TEXT */}
-            <motion.div 
-              style={{ x: textX2, z: 300 }} 
-              className="absolute top-[55%] right-0 whitespace-nowrap opacity-90 pointer-events-none flex items-center"
-            >
-              <h2 className="text-[10vw] font-black drop-shadow-[0_0_25px_rgba(212,175,55,0.6)] text-[#D4AF37] mix-blend-screen flex items-baseline gap-[2vw]">
-                <span className="font-serif tracking-[0.2em] uppercase">PROOF THAT WE LIVED</span>
-              </h2>
-            </motion.div>
-
-            {/* 3D IMAGE 3 */}
-            <motion.div 
-               style={{ scale: img3Scale, opacity: img3Opacity, rotateZ: img3RotateZ }} 
-               className="absolute inset-0 flex items-center justify-center z-50 pointer-events-none will-change-transform transform-gpu"
-            >
-              <img src="/3d_3.png" alt="Memory Segment 3" className="w-[90vw] md:w-[60vw] rounded-3xl shadow-2xl md:shadow-[0_0_150px_rgba(255,255,255,0.1)] grayscale opacity-90 border border-white/20 transform-gpu" />
-            </motion.div>
-
-            <motion.div 
-              animate={{ y: [0, 15, 0] }}
-              transition={{ repeat: Infinity, duration: 2.5, ease: "easeInOut" }}
-              className="absolute bottom-[5%] z-50 flex flex-col items-center gap-3 opacity-60"
-            >
-              <span className="text-white text-xs tracking-[0.4em] uppercase font-bold">Scroll to Dive</span>
-              <ChevronDown className="w-5 h-5 text-white" />
-            </motion.div>
-
-          </motion.div>
+    <main className="w-full flex flex-col bg-[#050505] text-[#FFFFFF] overflow-x-hidden selection:bg-white/20">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
+      
+      {/* 1. CINEMATIC VIDEO HERO */}
+      <section className="relative w-full min-h-[100vh] flex items-center pt-20 lg:pt-0 overflow-hidden">
+        {/* Background Video */}
+        <div className="absolute inset-0 w-full h-full z-0">
+          <video 
+            autoPlay 
+            loop 
+            muted 
+            playsInline 
+            className="w-full h-full object-cover opacity-60"
+            style={{ filter: "brightness(0.6) contrast(1.2)" }}
+          >
+            {/* Using a high-quality abstract cinematic placeholder video */}
+            <source src="https://assets.mixkit.co/videos/preview/mixkit-stars-in-space-1610-large.mp4" type="video/mp4" />
+          </video>
+          {/* Gradient Overlays for Readability */}
+          <div className="absolute inset-0 bg-gradient-to-r from-[#050505] via-[#050505]/80 to-transparent"></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#050505]/20 to-[#050505]"></div>
+          <div className="absolute inset-0 bg-[#050505]/40 mix-blend-overlay"></div>
         </div>
-      </div>
 
-      <main className="w-full bg-[#050505] text-white selection:bg-white/20 relative z-20 border-t border-white/10">
-        
-        {/* HERO SECTION */}
-        <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 px-6 overflow-hidden flex flex-col items-center text-center">
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(255,255,255,0.05)_0%,transparent_50%)] pointer-events-none" />
-          
-          <motion.div 
-            initial="hidden" animate="show" variants={STAGGER}
-            className="max-w-4xl mx-auto z-10"
-          >
-            <motion.div variants={FADE_UP} className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs font-medium tracking-wide uppercase mb-8">
-              <Sparkles className="w-3 h-3 text-[#D4AF37]" />
-              <span className="text-zinc-300">The New Standard for Digital Memories</span>
+        <div className="relative z-10 w-full max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center">
+          <div className="space-y-8 max-w-2xl">
+            <motion.div 
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, ease: "easeOut" }}
+            >
+              <h1 className="font-serif text-5xl md:text-7xl lg:text-8xl leading-[1.1] tracking-tight mb-6">
+                Every memory deserves a place that <span className="italic text-white/80">lasts forever.</span>
+              </h1>
+              <p className="text-lg md:text-xl text-[#B3B3B3] font-light leading-relaxed max-w-lg">
+                Memora helps you preserve memories, organize your life, and rediscover meaningful moments with an intelligent digital memory vault.
+              </p>
             </motion.div>
 
-            <motion.h1 variants={FADE_UP} className="text-5xl md:text-7xl font-semibold tracking-tight text-white mb-6">
-              Preserve your life, <br className="hidden md:block" />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-zinc-200 to-zinc-500">beautifully organized.</span>
-            </motion.h1>
-
-            <motion.p variants={FADE_UP} className="text-lg md:text-xl text-zinc-400 max-w-2xl mx-auto mb-10 leading-relaxed font-light">
-              Memora is the premium digital vault for your most precious moments. Capture, organize, and instantly find memories without the clutter of traditional cloud storage.
-            </motion.p>
-
-            <motion.div variants={FADE_UP} className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <button 
-                onClick={() => setIsUploadOpen(true)}
-                className="w-full sm:w-auto px-8 py-4 bg-white text-black rounded-full font-medium transition-transform hover:scale-105 flex items-center justify-center gap-2"
-              >
-                Start your vault
-                <ArrowRight className="w-4 h-4" />
+            <motion.div 
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, delay: 0.2, ease: "easeOut" }}
+              className="flex flex-col sm:flex-row items-center gap-4 pt-4"
+            >
+              <button onClick={handleSignIn} className="w-full sm:w-auto bg-white text-black px-8 py-4 rounded-full font-medium hover:bg-white/90 transition-all text-center flex items-center justify-center gap-2">
+                Get Started Free <ArrowRight className="w-4 h-4" />
               </button>
-              <Link 
-                href="/how-it-works"
-                className="w-full sm:w-auto px-8 py-4 bg-transparent border border-white/20 text-white rounded-full font-medium transition-colors hover:bg-white/5 flex items-center justify-center gap-2"
-              >
-                See how it works
-                <PlayCircle className="w-4 h-4" />
-              </Link>
+              <button onClick={() => document.getElementById('vault')?.scrollIntoView({ behavior: 'smooth' })} className="w-full sm:w-auto bg-white/5 border border-white/10 hover:bg-white/10 text-white px-8 py-4 rounded-full font-medium transition-all backdrop-blur-md text-center flex items-center justify-center gap-2">
+                <Play className="w-4 h-4" /> Watch Demo
+              </button>
             </motion.div>
+          </div>
 
-            <motion.div variants={FADE_UP} className="mt-12 flex items-center justify-center gap-6 text-sm text-zinc-500">
-              <span className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-green-500/70" /> End-to-end encryption</span>
-              <span className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-green-500/70" /> No ads. Ever.</span>
-              <span className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-green-500/70" /> Cancel anytime</span>
-            </motion.div>
-          </motion.div>
-
-          {/* Product Preview Mockup */}
+          {/* Interactive product preview beside hero */}
           <motion.div 
-            initial={{ opacity: 0, y: 100 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4, duration: 1, ease: "easeOut" }}
-            className="w-full max-w-6xl mx-auto mt-20 relative z-10"
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1.5, delay: 0.4, ease: "easeOut" }}
+            className="hidden lg:block relative h-[600px] w-full perspective-1000"
           >
-            <div className="rounded-2xl border border-white/10 bg-[#0A0A0A] shadow-[0_0_100px_rgba(255,255,255,0.03)] overflow-hidden">
-              <div className="h-12 border-b border-white/5 flex items-center px-4 gap-2 bg-[#050505]">
-                <div className="w-3 h-3 rounded-full bg-red-500/20" />
-                <div className="w-3 h-3 rounded-full bg-yellow-500/20" />
-                <div className="w-3 h-3 rounded-full bg-green-500/20" />
-              </div>
-              <div className="aspect-video bg-[url('/mockup.png')] bg-cover bg-center opacity-80" />
-            </div>
-          </motion.div>
-        </section>
-
-        {/* PROBLEM STATEMENT */}
-        <section className="py-24 px-6 bg-[#050505] border-t border-white/5">
-          <div className="max-w-4xl mx-auto text-center">
-            <ScrollReveal>
-              <h2 className="text-3xl md:text-5xl font-semibold mb-8 tracking-tight text-white">The problem with our digital lives.</h2>
-            </ScrollReveal>
-            <ScrollReveal delay={0.1}>
-              <p className="text-lg md:text-xl text-zinc-400 leading-relaxed mb-6">
-                We take more photos and write more notes than any generation in history. Yet, when we want to find a specific memory, we're forced to scroll through endless camera rolls filled with screenshots, receipts, and duplicated images.
-              </p>
-            </ScrollReveal>
-            <ScrollReveal delay={0.2}>
-              <p className="text-lg md:text-xl text-zinc-400 leading-relaxed">
-                Our most precious moments are scattered across different clouds, lost in a sea of irrelevant data. We are preserving data, but we are losing our memories.
-              </p>
-            </ScrollReveal>
-          </div>
-        </section>
-
-        {/* HOW IT WORKS */}
-        <section className="py-32 px-6 bg-[#020202]">
-          <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-20">
-              <ScrollReveal>
-                <h2 className="text-3xl md:text-5xl font-semibold mb-6 tracking-tight">Three steps to eternity.</h2>
-              </ScrollReveal>
-              <ScrollReveal delay={0.1}>
-                <p className="text-zinc-400 text-lg max-w-2xl mx-auto">We stripped away the complexity so you can focus on what matters: the memory itself.</p>
-              </ScrollReveal>
-            </div>
-
-            <div className="grid md:grid-cols-3 gap-8 relative">
-              <div className="hidden md:block absolute top-1/2 left-[15%] right-[15%] h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-y-1/2" />
-              
-              {[
-                { step: "01", title: "Capture securely", desc: "Upload photos, videos, or text directly into your encrypted vault.", icon: Lock },
-                { step: "02", title: "Organize intuitively", desc: "Tag, categorize, and build timelines that make sense to your brain.", icon: Brain },
-                { step: "03", title: "Relive instantly", desc: "Search across thousands of memories in milliseconds.", icon: Zap }
-              ].map((item, i) => (
-                <ScrollReveal key={i} delay={0.2 + (i * 0.1)} className="relative z-10 bg-[#0A0A0A] border border-white/5 rounded-2xl p-8 flex flex-col items-center text-center">
-                  <div className="w-16 h-16 rounded-full bg-white/5 border border-white/10 flex items-center justify-center mb-6">
-                    <item.icon className="w-6 h-6 text-zinc-300" />
-                  </div>
-                  <div className="text-xs font-bold text-zinc-500 mb-2 uppercase tracking-widest">Step {item.step}</div>
-                  <h3 className="text-xl font-medium mb-3">{item.title}</h3>
-                  <p className="text-zinc-400 text-sm leading-relaxed">{item.desc}</p>
-                </ScrollReveal>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* WHY MEMORA */}
-        <section className="py-32 px-6 border-y border-white/5">
-          <div className="max-w-4xl mx-auto text-center">
-            <ScrollReveal>
-              <h2 className="text-3xl md:text-5xl font-semibold mb-12 tracking-tight">Why switch to Memora?</h2>
-            </ScrollReveal>
-            
-            <div className="grid sm:grid-cols-2 gap-6 text-left">
-              <ScrollReveal delay={0.1} className="bg-red-500/5 border border-red-500/10 rounded-2xl p-8">
-                <h3 className="text-red-400 font-medium mb-4 flex items-center gap-2">Traditional Storage</h3>
-                <ul className="space-y-3 text-sm text-zinc-400">
-                  <li className="flex gap-2"><span className="text-red-500/50">✕</span> Cluttered folders</li>
-                  <li className="flex gap-2"><span className="text-red-500/50">✕</span> Hard to search</li>
-                  <li className="flex gap-2"><span className="text-red-500/50">✕</span> Mixed with work files</li>
-                  <li className="flex gap-2"><span className="text-red-500/50">✕</span> Privacy concerns</li>
-                </ul>
-              </ScrollReveal>
-              <ScrollReveal delay={0.2} className="bg-green-500/5 border border-green-500/10 rounded-2xl p-8">
-                <h3 className="text-green-400 font-medium mb-4 flex items-center gap-2">Memora</h3>
-                <ul className="space-y-3 text-sm text-zinc-300">
-                  <li className="flex gap-2"><span className="text-green-500/50">✓</span> Beautiful, visual timelines</li>
-                  <li className="flex gap-2"><span className="text-green-500/50">✓</span> Instant semantic search</li>
-                  <li className="flex gap-2"><span className="text-green-500/50">✓</span> Dedicated strictly to life</li>
-                  <li className="flex gap-2"><span className="text-green-500/50">✓</span> Absolute privacy</li>
-                </ul>
-              </ScrollReveal>
-            </div>
-          </div>
-        </section>
-
-        {/* FEATURES */}
-        <section className="py-32 px-6 bg-[#020202]">
-          <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-20">
-              <ScrollReveal>
-                <h2 className="text-3xl md:text-5xl font-semibold mb-6 tracking-tight">Built for permanence.</h2>
-              </ScrollReveal>
-            </div>
-
-            <div className="grid md:grid-cols-2 gap-x-12 gap-y-16">
-              {[
-                { title: "Universal Search", benefit: "Find any memory instantly.", desc: "Stop scrolling endlessly. Search by emotion, location, or content.", example: '"That sunset in Kyoto last summer"', icon: Search },
-                { title: "Bank-Grade Encryption", benefit: "Your life remains yours.", desc: "We utilize zero-knowledge architecture. Not even we can see your files.", example: "Secured with AES-256 standards", icon: Shield },
-                { title: "Rich Media Support", benefit: "Capture the whole story.", desc: "Combine photos, videos, and journal entries into single cohesive memories.", example: "A photo + the story behind it", icon: FileImage },
-                { title: "Curated Timelines", benefit: "See your life in context.", desc: "Memories automatically organize themselves into beautiful chronological journeys.", example: "View '2023' as a seamless story", icon: Heart }
-              ].map((f, i) => (
-                <ScrollReveal key={i} delay={i * 0.1} className="flex gap-6">
-                  <div className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex-shrink-0 flex items-center justify-center">
-                    <f.icon className="w-6 h-6 text-[#D4AF37]" />
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-medium mb-1">{f.title}</h3>
-                    <div className="text-[#D4AF37] text-sm font-medium mb-2">{f.benefit}</div>
-                    <p className="text-zinc-400 text-sm leading-relaxed mb-3">{f.desc}</p>
-                    <div className="bg-white/5 border border-white/10 rounded text-xs text-zinc-500 px-3 py-1.5 inline-block font-mono">Example: {f.example}</div>
-                  </div>
-                </ScrollReveal>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* WHO IS IT FOR */}
-        <section className="py-32 px-6 border-y border-white/5">
-          <div className="max-w-6xl mx-auto text-center">
-            <ScrollReveal>
-              <h2 className="text-3xl md:text-5xl font-semibold mb-16 tracking-tight">Designed for every life.</h2>
-            </ScrollReveal>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {[
-                { title: "Students", desc: "Archive college years, late nights, and milestones." },
-                { title: "Families", desc: "Build a digital heirloom for the next generation." },
-                { title: "Creators", desc: "Store inspiration and behind-the-scenes moments." },
-                { title: "Couples", desc: "A private space for your shared journey." }
-              ].map((persona, i) => (
-                <ScrollReveal key={i} delay={0.1 + (i * 0.1)} className="bg-[#0A0A0A] p-8 rounded-2xl border border-white/5 text-left">
-                  <h3 className="text-lg font-medium mb-2">{persona.title}</h3>
-                  <p className="text-sm text-zinc-400">{persona.desc}</p>
-                </ScrollReveal>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* VAULT / DASHBOARD AREA */}
-        {initialMemories.length > 0 && (
-          <section className="py-32 px-6 bg-[#050505]" id="vault">
-            <div className="max-w-7xl mx-auto">
-              <div className="flex flex-col items-center mb-16">
-                <h2 className="text-3xl font-semibold mb-6">Your Vault</h2>
-                <div className="flex flex-wrap justify-center gap-2 mb-10">
-                  {CATEGORIES.map((cat) => (
-                    <button
-                      key={cat}
-                      onClick={() => setActiveCategory(cat)}
-                      className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-300 ${
-                        activeCategory === cat 
-                          ? 'bg-white text-black' 
-                          : 'bg-zinc-900 text-zinc-400 hover:text-white hover:bg-zinc-800 border border-white/5'
-                      }`}
-                    >
-                      {cat}
-                    </button>
-                  ))}
+            <div className="absolute inset-0 bg-white/[0.03] border border-white/10 rounded-3xl backdrop-blur-2xl shadow-2xl p-6 transform rotate-y-[-10deg] rotate-x-[5deg] transition-transform hover:rotate-0 duration-700 ease-out flex flex-col gap-4">
+              <div className="flex items-center justify-between border-b border-white/10 pb-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center"><Search className="w-5 h-5 text-white/70" /></div>
+                  <div className="h-4 w-32 bg-white/10 rounded-full"></div>
+                </div>
+                <div className="flex gap-2">
+                  <div className="w-3 h-3 rounded-full bg-white/20"></div>
+                  <div className="w-3 h-3 rounded-full bg-white/20"></div>
+                  <div className="w-3 h-3 rounded-full bg-white/20"></div>
                 </div>
               </div>
-              <MemoryVault memories={activeCategory === "All" ? initialMemories : initialMemories.filter(m => m.category === activeCategory)} />
+              <div className="grid grid-cols-2 gap-4 flex-1">
+                <div className="bg-white/5 rounded-2xl overflow-hidden relative group">
+                  <img src="/poster1.png" alt="Memory" className="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-700" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex items-end p-4">
+                    <p className="text-sm font-medium">Summer 2026</p>
+                  </div>
+                </div>
+                <div className="flex flex-col gap-4">
+                  <div className="bg-white/5 rounded-2xl p-4 flex-1 flex flex-col justify-center">
+                    <div className="w-8 h-8 rounded-full bg-[#D4AF37]/20 flex items-center justify-center mb-3"><Lock className="w-4 h-4 text-[#D4AF37]" /></div>
+                    <div className="h-3 w-3/4 bg-white/20 rounded-full mb-2"></div>
+                    <div className="h-3 w-1/2 bg-white/10 rounded-full"></div>
+                  </div>
+                  <div className="bg-white/5 rounded-2xl p-4 flex-1">
+                    <div className="h-full w-full border border-dashed border-white/20 rounded-xl flex items-center justify-center">
+                      <p className="text-xs text-white/40 uppercase tracking-widest">+ Add Memory</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
-          </section>
-        )}
+          </motion.div>
+        </div>
 
-        {/* FAQ SECTION */}
-        <section className="py-32 px-6 bg-[#0A0A0A] border-y border-white/5">
-          <div className="max-w-4xl mx-auto">
+        {/* Scroll Indicator */}
+        <motion.div 
+          animate={{ y: [0, 10, 0] }}
+          transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+          className="absolute bottom-10 left-1/2 -translate-x-1/2 text-white/30 flex flex-col items-center gap-2"
+        >
+          <span className="text-xs uppercase tracking-widest">Scroll</span>
+          <ChevronDown className="w-4 h-4" />
+        </motion.div>
+      </section>
+
+      {/* 2. TRUST SECTION */}
+      <section className="w-full py-24 bg-[#050505] relative z-10">
+        <div className="max-w-7xl mx-auto px-6">
+          <ScrollReveal>
+            <h2 className="font-serif text-3xl md:text-5xl text-center mb-16">Why people preserve memories</h2>
+          </ScrollReveal>
+          <div className="grid md:grid-cols-3 gap-6">
+            <ScrollReveal delay={0.1} className="bg-[#111111] border border-white/10 rounded-3xl p-10 hover:bg-white/[0.03] transition-colors">
+              <Heart className="w-8 h-8 text-rose-400 mb-6" />
+              <h3 className="text-xl font-medium mb-4">Emotional Value</h3>
+              <p className="text-[#B3B3B3] leading-relaxed">
+                Photos without context lose their meaning. We help you capture the feelings, thoughts, and stories behind the image, preserving the true essence of the moment.
+              </p>
+            </ScrollReveal>
+            <ScrollReveal delay={0.2} className="bg-[#111111] border border-white/10 rounded-3xl p-10 hover:bg-white/[0.03] transition-colors">
+              <Shield className="w-8 h-8 text-emerald-400 mb-6" />
+              <h3 className="text-xl font-medium mb-4">Absolute Privacy</h3>
+              <p className="text-[#B3B3B3] leading-relaxed">
+                In an era of data harvesting, your memories should remain yours. Zero-knowledge encryption ensures that nobody—not even us—can view your personal history.
+              </p>
+            </ScrollReveal>
+            <ScrollReveal delay={0.3} className="bg-[#111111] border border-white/10 rounded-3xl p-10 hover:bg-white/[0.03] transition-colors">
+              <Folder className="w-8 h-8 text-blue-400 mb-6" />
+              <h3 className="text-xl font-medium mb-4">Digital Legacy</h3>
+              <p className="text-[#B3B3B3] leading-relaxed">
+                Build an organized, elegant archive of your life's work that can be safely passed down to future generations without relying on fragile social media platforms.
+              </p>
+            </ScrollReveal>
+          </div>
+        </div>
+      </section>
+
+      {/* 3. HOW MEMORA WORKS */}
+      <section className="w-full py-32 bg-black relative">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-white/[0.03] via-transparent to-transparent"></div>
+        <div className="max-w-7xl mx-auto px-6 relative z-10">
+          <ScrollReveal>
+            <div className="text-center mb-24">
+              <span className="text-[#D4AF37] text-sm uppercase tracking-widest font-bold mb-4 block">The Process</span>
+              <h2 className="font-serif text-4xl md:text-6xl mb-6">How Memora Works</h2>
+              <p className="text-[#B3B3B3] text-lg max-w-2xl mx-auto">A seamless, three-step journey to immortalizing your experiences.</p>
+            </div>
+          </ScrollReveal>
+
+          <div className="space-y-32">
+            {/* Step 1 */}
+            <div className="grid md:grid-cols-2 gap-16 items-center">
+              <ScrollReveal className="order-2 md:order-1">
+                <div className="w-full rounded-3xl overflow-hidden border border-white/10 relative bg-[#111111] aspect-square group">
+                  <img src="/step1.png" alt="Memora Upload Interface" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                </div>
+              </ScrollReveal>
+              <ScrollReveal delay={0.2} className="order-1 md:order-2 space-y-6">
+                <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center text-xl font-serif">1</div>
+                <h3 className="text-3xl font-medium">Capture memories</h3>
+                <p className="text-[#B3B3B3] text-lg leading-relaxed">
+                  Upload photos, videos, and documents. Write journal entries while the emotion is still fresh. Memora securely encrypts everything before it leaves your device.
+                </p>
+                <ul className="space-y-3 text-[#B3B3B3]">
+                  <li className="flex items-center gap-3"><CheckCircle2 className="w-5 h-5 text-white/50" /> High-resolution photos</li>
+                  <li className="flex items-center gap-3"><CheckCircle2 className="w-5 h-5 text-white/50" /> Rich-text journal entries</li>
+                  <li className="flex items-center gap-3"><CheckCircle2 className="w-5 h-5 text-white/50" /> Important life documents</li>
+                </ul>
+              </ScrollReveal>
+            </div>
+
+            {/* Step 2 */}
+            <div className="grid md:grid-cols-2 gap-16 items-center">
+              <ScrollReveal className="space-y-6">
+                <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center text-xl font-serif">2</div>
+                <h3 className="text-3xl font-medium">Organize automatically</h3>
+                <p className="text-[#B3B3B3] text-lg leading-relaxed">
+                  Say goodbye to chaotic folders. Build beautifully structured collections, chronologically precise timelines, and contextual categories that make sense to you.
+                </p>
+                <ul className="space-y-3 text-[#B3B3B3]">
+                  <li className="flex items-center gap-3"><CheckCircle2 className="w-5 h-5 text-white/50" /> Smart collections</li>
+                  <li className="flex items-center gap-3"><CheckCircle2 className="w-5 h-5 text-white/50" /> Intuitive categorization</li>
+                  <li className="flex items-center gap-3"><CheckCircle2 className="w-5 h-5 text-white/50" /> Chronological timelines</li>
+                </ul>
+              </ScrollReveal>
+              <ScrollReveal delay={0.2}>
+                <div className="w-full rounded-3xl overflow-hidden border border-white/10 relative bg-[#111111] aspect-square group">
+                  <img src="/step2.png" alt="Memora Collections Interface" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                </div>
+              </ScrollReveal>
+            </div>
+
+            {/* Step 3 */}
+            <div className="grid md:grid-cols-2 gap-16 items-center">
+              <ScrollReveal className="order-2 md:order-1">
+                <div className="w-full rounded-3xl overflow-hidden border border-white/10 relative bg-[#111111] aspect-square group">
+                  <img src="/step3.png" alt="Memora Search Interface" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                </div>
+              </ScrollReveal>
+              <ScrollReveal delay={0.2} className="order-1 md:order-2 space-y-6">
+                <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center text-xl font-serif">3</div>
+                <h3 className="text-3xl font-medium">Rediscover instantly</h3>
+                <p className="text-[#B3B3B3] text-lg leading-relaxed">
+                  When you want to look back, powerful semantic search and AI assistance help you pinpoint exact moments and feelings out of thousands of entries.
+                </p>
+                <ul className="space-y-3 text-[#B3B3B3]">
+                  <li className="flex items-center gap-3"><CheckCircle2 className="w-5 h-5 text-white/50" /> Powerful semantic search</li>
+                  <li className="flex items-center gap-3"><CheckCircle2 className="w-5 h-5 text-white/50" /> Fluid timeline scrubbing</li>
+                  <li className="flex items-center gap-3"><CheckCircle2 className="w-5 h-5 text-white/50" /> AI-assisted rediscovery</li>
+                </ul>
+              </ScrollReveal>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 4. PRODUCT SHOWCASE */}
+      <section className="w-full py-32 bg-[#050505]">
+        <div className="max-w-7xl mx-auto px-6">
+          <ScrollReveal>
+            <div className="text-center mb-20">
+              <h2 className="font-serif text-4xl md:text-6xl mb-6">Designed for clarity.</h2>
+              <p className="text-[#B3B3B3] text-lg max-w-2xl mx-auto">Experience a distraction-free interface where your memories take center stage. No clutter, no ads, just you and your history.</p>
+            </div>
+          </ScrollReveal>
+
+          <ScrollReveal delay={0.2}>
+            <div className="w-full rounded-3xl overflow-hidden border border-white/10 shadow-2xl relative bg-[#111111] p-2 md:p-6 mb-32">
+              <div className="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent pointer-events-none"></div>
+              <img src="/mockup.png" alt="Memora Dashboard" className="w-full h-auto rounded-xl md:rounded-2xl border border-white/5" />
+            </div>
+          </ScrollReveal>
+        </div>
+      </section>
+
+      {/* 5. WHO IS MEMORA FOR */}
+      <section className="w-full py-24 bg-black border-y border-white/5">
+        <div className="max-w-7xl mx-auto px-6">
+          <ScrollReveal>
+            <h2 className="font-serif text-3xl md:text-5xl text-center mb-16">Who is Memora for?</h2>
+          </ScrollReveal>
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-8">
+            {["Students", "Professionals", "Families", "Creators", "Researchers"].map((persona, i) => (
+              <ScrollReveal key={persona} delay={0.1 + (i * 0.1)} className="flex flex-col items-center justify-center text-center space-y-4 group">
+                <div className="w-20 h-20 rounded-full bg-[#111111] border border-white/10 flex items-center justify-center group-hover:border-white/30 transition-colors">
+                  <UserIcon className="w-8 h-8 text-white/40 group-hover:text-white transition-colors" />
+                </div>
+                <span className="font-medium text-white/70 group-hover:text-white transition-colors">{persona}</span>
+              </ScrollReveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 6. WHY MEMORA */}
+      <section className="w-full py-32 bg-[#050505]">
+        <div className="max-w-4xl mx-auto px-6 text-center space-y-8">
+          <ScrollReveal>
+            <h2 className="font-serif text-4xl md:text-6xl mb-6">The problem with the modern camera roll.</h2>
+          </ScrollReveal>
+          <ScrollReveal delay={0.1}>
+            <p className="text-xl text-[#B3B3B3] leading-relaxed">
+              We take more photos today than at any point in human history, yet we remember less. Traditional photo galleries have become chaotic dumping grounds for screenshots, receipts, and duplicate selfies. 
+            </p>
+          </ScrollReveal>
+          <ScrollReveal delay={0.2}>
+            <p className="text-xl text-white leading-relaxed font-serif italic">
+              Memora solves this by forcing you to be intentional. We are a sanctuary, not a dumping ground.
+            </p>
+          </ScrollReveal>
+        </div>
+      </section>
+
+      {/* 7. FEATURES */}
+      <section className="w-full py-24 bg-[#111111]">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="grid md:grid-cols-2 gap-12">
+            <ScrollReveal className="space-y-6">
+              <div className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center">
+                <Lock className="w-6 h-6 text-white" />
+              </div>
+              <h3 className="text-2xl font-medium">Zero-Knowledge Encryption</h3>
+              <div className="space-y-4 text-[#B3B3B3]">
+                <p><strong className="text-white">What it does:</strong> Encrypts your data locally before uploading.</p>
+                <p><strong className="text-white">Why it matters:</strong> Prevents unauthorized access, data mining, and surveillance.</p>
+                <p><strong className="text-white">Example:</strong> Your private journal entries are mathematically impossible for anyone but you to read.</p>
+              </div>
+            </ScrollReveal>
+            <ScrollReveal delay={0.2} className="space-y-6">
+              <div className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center">
+                <Brain className="w-6 h-6 text-white" />
+              </div>
+              <h3 className="text-2xl font-medium">Semantic AI Search</h3>
+              <div className="space-y-4 text-[#B3B3B3]">
+                <p><strong className="text-white">What it does:</strong> Understands the context and meaning of your entries.</p>
+                <p><strong className="text-white">Why it matters:</strong> Lets you search by concept rather than exact keywords.</p>
+                <p><strong className="text-white">Example:</strong> Search "the day I felt truly happy at the beach" and instantly find the memory.</p>
+              </div>
+            </ScrollReveal>
+          </div>
+        </div>
+      </section>
+
+      {/* 8. PUBLIC CONTENT (Education) */}
+      <section className="w-full py-32 bg-black border-y border-white/5 text-center">
+        <div className="max-w-3xl mx-auto px-6">
+          <ScrollReveal>
+            <h2 className="font-serif text-3xl md:text-5xl mb-8">Educating the Future</h2>
+            <p className="text-[#B3B3B3] text-lg leading-relaxed mb-12">
+              We believe in open knowledge. Memora provides extensive public resources on cognitive offloading, building a second brain, and the psychology of digital memory preservation to help everyone build a better relationship with their past.
+            </p>
+            <Link href="/resources" className="inline-flex items-center gap-2 text-white border-b border-white pb-1 hover:text-[#D4AF37] hover:border-[#D4AF37] transition-colors">
+              Explore the Resource Center <ArrowRight className="w-4 h-4" />
+            </Link>
+          </ScrollReveal>
+        </div>
+      </section>
+
+      {/* LIVE DEMO: VAULT */}
+      <section id="vault" className="w-full py-32 bg-[#050505]">
+        <div className="max-w-7xl mx-auto px-6">
+          <ScrollReveal>
             <div className="text-center mb-16">
-              <ScrollReveal>
-                <h2 className="text-3xl md:text-5xl font-semibold mb-6 tracking-tight">Frequently Asked Questions</h2>
-              </ScrollReveal>
-              <ScrollReveal delay={0.1}>
-                <p className="text-zinc-400 text-lg">Everything you need to know about Memora and how it protects your data.</p>
-              </ScrollReveal>
+              <h2 className="font-serif text-4xl md:text-5xl mb-6">Interactive Preview</h2>
+              <p className="text-[#B3B3B3]">Try the interface right here. No sign-up required for the demo.</p>
             </div>
-            <div className="space-y-6">
-              {[
-                { q: "Is my data truly private?", a: "Yes. Memora uses AES-256 end-to-end encryption. Your data is encrypted before it leaves your device, meaning not even our team can access your memories." },
-                { q: "What happens if I want to leave?", a: "Your memories are yours. You can export your entire vault in standard formats (ZIP, JSON, JPG) with a single click at any time." },
-                { q: "How is Memora different from standard cloud storage?", a: "Those platforms are built to store everything—including receipts, screenshots, and duplicates. Memora is purpose-built strictly for curated, meaningful memories, enriched with context and stories." },
-                { q: "Do you compress my photos?", a: "No. We believe in preserving the exact quality of your memories. Original files are stored securely without compression." },
-                { q: "Is there a free tier?", a: "We offer a 14-day free trial so you can experience the platform. After that, we charge a simple flat fee. We never sell ads, and we never sell your data." },
-              ].map((faq, i) => (
-                <ScrollReveal key={i} delay={0.2 + (i * 0.1)} className="bg-[#050505] border border-white/5 p-6 rounded-2xl">
-                  <h3 className="text-lg font-medium text-white mb-2">{faq.q}</h3>
-                  <p className="text-zinc-400 text-sm leading-relaxed">{faq.a}</p>
-                </ScrollReveal>
-              ))}
+          </ScrollReveal>
+          <ScrollReveal delay={0.2}>
+            <div className="rounded-3xl overflow-hidden border border-white/10 bg-[#0A0A0A]">
+              <MemoryVault memories={initialMemories} />
             </div>
-          </div>
-        </section>
+          </ScrollReveal>
+        </div>
+      </section>
 
-        {/* FINAL CTA */}
-        <section className="py-40 px-6 bg-gradient-to-b from-[#020202] to-black relative overflow-hidden">
-          <div className="absolute inset-0 bg-[url('/noise.png')] opacity-20 mix-blend-overlay" />
-          <div className="max-w-3xl mx-auto text-center relative z-10">
-            <ScrollReveal>
-              <h2 className="text-4xl md:text-6xl font-semibold mb-6 tracking-tight">Ready to preserve your legacy?</h2>
-            </ScrollReveal>
-            <ScrollReveal delay={0.1}>
-              <p className="text-xl text-zinc-400 mb-10">Join thousands of users who trust Memora with their most precious moments.</p>
-            </ScrollReveal>
-            <ScrollReveal delay={0.2}>
-              <button 
-                onClick={() => setIsUploadOpen(true)}
-                className="px-10 py-5 bg-white text-black rounded-full font-medium text-lg transition-transform hover:scale-105"
-              >
-                Start your vault
+      {/* 9. FAQ */}
+      <section className="w-full py-32 bg-[#111111]">
+        <div className="max-w-4xl mx-auto px-6">
+          <ScrollReveal>
+            <h2 className="font-serif text-4xl md:text-5xl text-center mb-16">Frequently Asked Questions</h2>
+          </ScrollReveal>
+          <div className="space-y-4">
+            {faqs.map((faq, i) => (
+              <ScrollReveal key={i} delay={0.05 * Math.min(i, 10)}>
+                <details className="group bg-[#050505] border border-white/5 rounded-2xl overflow-hidden [&_summary::-webkit-details-marker]:hidden">
+                  <summary className="flex items-center justify-between px-6 py-5 cursor-pointer font-medium text-lg text-white/90">
+                    {faq.q}
+                    <span className="transition group-open:rotate-180">
+                      <ChevronDown className="w-5 h-5 text-white/50" />
+                    </span>
+                  </summary>
+                  <div className="px-6 pb-6 text-[#B3B3B3] leading-relaxed">
+                    {faq.a}
+                  </div>
+                </details>
+              </ScrollReveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 10. TESTIMONIALS */}
+      <section className="w-full py-32 bg-black border-y border-white/5">
+        <div className="max-w-7xl mx-auto px-6">
+          <ScrollReveal>
+            <div className="text-center mb-16">
+              <h2 className="font-serif text-3xl md:text-5xl mb-4">What Our Users Will Say</h2>
+              <span className="text-xs text-white/40 uppercase tracking-widest bg-white/5 px-3 py-1 rounded-full border border-white/10">Placeholder Content</span>
+            </div>
+          </ScrollReveal>
+          <div className="grid md:grid-cols-3 gap-6">
+            {testimonials.map((t, i) => (
+              <ScrollReveal key={i} delay={0.1 * i} className="bg-[#111111] border border-white/10 rounded-3xl p-8 flex flex-col justify-between">
+                <p className="text-lg text-white/80 italic mb-8">"{t.quote}"</p>
+                <div className="flex items-center gap-4">
+                  <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center">
+                    <UserIcon className="w-5 h-5 text-white/50" />
+                  </div>
+                  <div>
+                    <div className="font-medium text-white">{t.author}</div>
+                    <div className="text-sm text-white/40">{t.role}</div>
+                  </div>
+                </div>
+              </ScrollReveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 11. FINAL CTA */}
+      <section className="w-full py-40 bg-[#050505] relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,_var(--tw-gradient-stops))] from-white/10 via-[#050505] to-[#050505]"></div>
+        <div className="max-w-4xl mx-auto px-6 text-center relative z-10 space-y-10">
+          <ScrollReveal>
+            <Crown className="w-12 h-12 text-[#D4AF37] mx-auto mb-8" />
+            <h2 className="font-serif text-5xl md:text-7xl leading-tight">Begin your eternal archive today.</h2>
+          </ScrollReveal>
+          <ScrollReveal delay={0.1}>
+            <p className="text-xl text-[#B3B3B3]">Join Memora and ensure your stories are never lost.</p>
+          </ScrollReveal>
+          <ScrollReveal delay={0.2}>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-8">
+              <button onClick={handleSignIn} className="w-full sm:w-auto bg-white text-black px-10 py-5 rounded-full font-bold hover:bg-white/90 transition-all shadow-[0_0_20px_rgba(255,255,255,0.2)]">
+                Get Started Free
               </button>
-            </ScrollReveal>
-          </div>
-        </section>
+            </div>
+          </ScrollReveal>
+        </div>
+      </section>
+    </main>
+  );
+}
 
-      </main>
-
-      <UploadModal isOpen={isUploadOpen} onClose={() => setIsUploadOpen(false)} />
-    </>
+// Simple fallback icon for Who Is Memora For section to avoid complex imports
+function UserIcon(props: any) {
+  return (
+    <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+      <circle cx="12" cy="7" r="4" />
+    </svg>
   );
 }
