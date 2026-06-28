@@ -1,4 +1,5 @@
 import { Navbar } from "@/components/Navbar";
+import { ScrollReveal } from "@/components/ScrollReveal";
 
 export const metadata = {
   title: "Frequently Asked Questions",
@@ -11,11 +12,11 @@ const faqs = [
   { q: "Is my data secure?", a: "Yes. We use AES-256 bit end-to-end encryption. Your memories are encrypted on your device before they ever reach our servers." },
   { q: "Can I share my memories?", a: "Currently, Memora is designed as a private vault. In the future, we plan to introduce secure, link-based sharing for specific trusted individuals." },
   { q: "What happens if I want to leave?", a: "You can export your entire vault (media and text) at any time in a standard, open format. Your data is yours." },
-  // Adding placeholders for the remaining 20 to hit the "25 FAQs" requirement elegantly
-  ...Array.from({length: 20}).map((_, i) => ({
-    q: `Common Question Regarding Usage or Policy #${i + 6}?`,
-    a: "This is a detailed response outlining exactly how Memora handles this specific scenario, ensuring complete transparency and building trust with the user."
-  }))
+  { q: "Do you offer a mobile app?", a: "Memora is built as a Progressive Web App (PWA) which means it works beautifully on any mobile device directly through your browser, without needing an app store." },
+  { q: "Are my photos compressed?", a: "No. We believe in preserving the full fidelity of your memories. We store the original file in its native resolution without downsampling." },
+  { q: "Can I search for people or objects?", a: "Yes. Our semantic search engine runs locally on your device to index your metadata and text, allowing you to search contextually." },
+  { q: "What happens to my vault if I pass away?", a: "We are currently developing a Legacy Protocol which will allow you to designate a trusted heir who can gain access to your vault in the future." },
+  { q: "Does Memora use my data to train AI?", a: "Absolutely not. We do not use your personal memories to train any public AI models. Any AI features we provide run strictly locally on your own data." }
 ];
 
 export default function FAQPage() {
@@ -43,23 +44,29 @@ export default function FAQPage() {
         
         <div className="max-w-3xl mx-auto px-6">
           <div className="text-center mb-16">
-            <h1 className="text-4xl md:text-5xl font-semibold tracking-tight mb-4">Frequently Asked Questions</h1>
-            <p className="text-lg text-zinc-400">Everything you need to know about the product and billing.</p>
+            <ScrollReveal>
+              <h1 className="text-4xl md:text-5xl font-semibold tracking-tight mb-4">Frequently Asked Questions</h1>
+            </ScrollReveal>
+            <ScrollReveal delay={0.1}>
+              <p className="text-lg text-zinc-400">Everything you need to know about the product and billing.</p>
+            </ScrollReveal>
           </div>
 
           <div className="space-y-6">
             {faqs.map((faq, i) => (
-              <details key={i} className="group bg-[#0A0A0A] border border-white/5 rounded-xl overflow-hidden [&_summary::-webkit-details-marker]:hidden">
-                <summary className="flex items-center justify-between px-6 py-5 cursor-pointer font-medium text-lg text-zinc-200">
-                  {faq.q}
-                  <span className="transition group-open:rotate-180">
-                    <svg fill="none" height="24" shapeRendering="geometricPrecision" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
-                  </span>
-                </summary>
-                <div className="px-6 pb-5 text-zinc-400 leading-relaxed">
-                  {faq.a}
-                </div>
-              </details>
+              <ScrollReveal key={i} delay={0.1 + (i * 0.05)}>
+                <details className="group bg-[#0A0A0A] border border-white/5 rounded-xl overflow-hidden [&_summary::-webkit-details-marker]:hidden">
+                  <summary className="flex items-center justify-between px-6 py-5 cursor-pointer font-medium text-lg text-zinc-200">
+                    {faq.q}
+                    <span className="transition group-open:rotate-180">
+                      <svg fill="none" height="24" shapeRendering="geometricPrecision" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
+                    </span>
+                  </summary>
+                  <div className="px-6 pb-5 text-zinc-400 leading-relaxed">
+                    {faq.a}
+                  </div>
+                </details>
+              </ScrollReveal>
             ))}
           </div>
         </div>

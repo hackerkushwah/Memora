@@ -4,6 +4,7 @@ import { useState, useRef } from "react";
 import { Navbar } from "@/components/Navbar";
 import { UploadModal } from "@/components/UploadModal";
 import { MemoryVault } from "@/components/MemoryVault";
+import { ScrollReveal } from "@/components/ScrollReveal";
 import { ClientMemory } from "@/lib/data";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { 
@@ -212,12 +213,35 @@ export default function HomeClient({ initialMemories }: { initialMemories: Clien
           </motion.div>
         </section>
 
+        {/* PROBLEM STATEMENT */}
+        <section className="py-24 px-6 bg-[#050505] border-t border-white/5">
+          <div className="max-w-4xl mx-auto text-center">
+            <ScrollReveal>
+              <h2 className="text-3xl md:text-5xl font-semibold mb-8 tracking-tight text-white">The problem with our digital lives.</h2>
+            </ScrollReveal>
+            <ScrollReveal delay={0.1}>
+              <p className="text-lg md:text-xl text-zinc-400 leading-relaxed mb-6">
+                We take more photos and write more notes than any generation in history. Yet, when we want to find a specific memory, we're forced to scroll through endless camera rolls filled with screenshots, receipts, and duplicated images.
+              </p>
+            </ScrollReveal>
+            <ScrollReveal delay={0.2}>
+              <p className="text-lg md:text-xl text-zinc-400 leading-relaxed">
+                Our most precious moments are scattered across different clouds, lost in a sea of irrelevant data. We are preserving data, but we are losing our memories.
+              </p>
+            </ScrollReveal>
+          </div>
+        </section>
+
         {/* HOW IT WORKS */}
         <section className="py-32 px-6 bg-[#020202]">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-20">
-              <h2 className="text-3xl md:text-5xl font-semibold mb-6 tracking-tight">Three steps to eternity.</h2>
-              <p className="text-zinc-400 text-lg max-w-2xl mx-auto">We stripped away the complexity so you can focus on what matters: the memory itself.</p>
+              <ScrollReveal>
+                <h2 className="text-3xl md:text-5xl font-semibold mb-6 tracking-tight">Three steps to eternity.</h2>
+              </ScrollReveal>
+              <ScrollReveal delay={0.1}>
+                <p className="text-zinc-400 text-lg max-w-2xl mx-auto">We stripped away the complexity so you can focus on what matters: the memory itself.</p>
+              </ScrollReveal>
             </div>
 
             <div className="grid md:grid-cols-3 gap-8 relative">
@@ -228,14 +252,14 @@ export default function HomeClient({ initialMemories }: { initialMemories: Clien
                 { step: "02", title: "Organize intuitively", desc: "Tag, categorize, and build timelines that make sense to your brain.", icon: Brain },
                 { step: "03", title: "Relive instantly", desc: "Search across thousands of memories in milliseconds.", icon: Zap }
               ].map((item, i) => (
-                <div key={i} className="relative z-10 bg-[#0A0A0A] border border-white/5 rounded-2xl p-8 flex flex-col items-center text-center">
+                <ScrollReveal key={i} delay={0.2 + (i * 0.1)} className="relative z-10 bg-[#0A0A0A] border border-white/5 rounded-2xl p-8 flex flex-col items-center text-center">
                   <div className="w-16 h-16 rounded-full bg-white/5 border border-white/10 flex items-center justify-center mb-6">
                     <item.icon className="w-6 h-6 text-zinc-300" />
                   </div>
                   <div className="text-xs font-bold text-zinc-500 mb-2 uppercase tracking-widest">Step {item.step}</div>
                   <h3 className="text-xl font-medium mb-3">{item.title}</h3>
                   <p className="text-zinc-400 text-sm leading-relaxed">{item.desc}</p>
-                </div>
+                </ScrollReveal>
               ))}
             </div>
           </div>
@@ -244,10 +268,12 @@ export default function HomeClient({ initialMemories }: { initialMemories: Clien
         {/* WHY MEMORA */}
         <section className="py-32 px-6 border-y border-white/5">
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-3xl md:text-5xl font-semibold mb-12 tracking-tight">Why switch to Memora?</h2>
+            <ScrollReveal>
+              <h2 className="text-3xl md:text-5xl font-semibold mb-12 tracking-tight">Why switch to Memora?</h2>
+            </ScrollReveal>
             
             <div className="grid sm:grid-cols-2 gap-6 text-left">
-              <div className="bg-red-500/5 border border-red-500/10 rounded-2xl p-8">
+              <ScrollReveal delay={0.1} className="bg-red-500/5 border border-red-500/10 rounded-2xl p-8">
                 <h3 className="text-red-400 font-medium mb-4 flex items-center gap-2">Traditional Storage</h3>
                 <ul className="space-y-3 text-sm text-zinc-400">
                   <li className="flex gap-2"><span className="text-red-500/50">✕</span> Cluttered folders</li>
@@ -255,8 +281,8 @@ export default function HomeClient({ initialMemories }: { initialMemories: Clien
                   <li className="flex gap-2"><span className="text-red-500/50">✕</span> Mixed with work files</li>
                   <li className="flex gap-2"><span className="text-red-500/50">✕</span> Privacy concerns</li>
                 </ul>
-              </div>
-              <div className="bg-green-500/5 border border-green-500/10 rounded-2xl p-8">
+              </ScrollReveal>
+              <ScrollReveal delay={0.2} className="bg-green-500/5 border border-green-500/10 rounded-2xl p-8">
                 <h3 className="text-green-400 font-medium mb-4 flex items-center gap-2">Memora</h3>
                 <ul className="space-y-3 text-sm text-zinc-300">
                   <li className="flex gap-2"><span className="text-green-500/50">✓</span> Beautiful, visual timelines</li>
@@ -264,7 +290,7 @@ export default function HomeClient({ initialMemories }: { initialMemories: Clien
                   <li className="flex gap-2"><span className="text-green-500/50">✓</span> Dedicated strictly to life</li>
                   <li className="flex gap-2"><span className="text-green-500/50">✓</span> Absolute privacy</li>
                 </ul>
-              </div>
+              </ScrollReveal>
             </div>
           </div>
         </section>
@@ -273,7 +299,9 @@ export default function HomeClient({ initialMemories }: { initialMemories: Clien
         <section className="py-32 px-6 bg-[#020202]">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-20">
-              <h2 className="text-3xl md:text-5xl font-semibold mb-6 tracking-tight">Built for permanence.</h2>
+              <ScrollReveal>
+                <h2 className="text-3xl md:text-5xl font-semibold mb-6 tracking-tight">Built for permanence.</h2>
+              </ScrollReveal>
             </div>
 
             <div className="grid md:grid-cols-2 gap-x-12 gap-y-16">
@@ -283,19 +311,17 @@ export default function HomeClient({ initialMemories }: { initialMemories: Clien
                 { title: "Rich Media Support", benefit: "Capture the whole story.", desc: "Combine photos, videos, and journal entries into single cohesive memories.", example: "A photo + the story behind it", icon: FileImage },
                 { title: "Curated Timelines", benefit: "See your life in context.", desc: "Memories automatically organize themselves into beautiful chronological journeys.", example: "View '2023' as a seamless story", icon: Heart }
               ].map((f, i) => (
-                <div key={i} className="flex gap-6">
+                <ScrollReveal key={i} delay={i * 0.1} className="flex gap-6">
                   <div className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex-shrink-0 flex items-center justify-center">
-                    <f.icon className="w-5 h-5 text-zinc-300" />
+                    <f.icon className="w-6 h-6 text-[#D4AF37]" />
                   </div>
                   <div>
                     <h3 className="text-xl font-medium mb-1">{f.title}</h3>
-                    <p className="text-[#D4AF37] text-sm font-medium mb-3">{f.benefit}</p>
-                    <p className="text-zinc-400 text-sm leading-relaxed mb-4">{f.desc}</p>
-                    <div className="text-xs text-zinc-500 bg-white/5 inline-block px-3 py-1.5 rounded-md border border-white/5">
-                      e.g., {f.example}
-                    </div>
+                    <div className="text-[#D4AF37] text-sm font-medium mb-2">{f.benefit}</div>
+                    <p className="text-zinc-400 text-sm leading-relaxed mb-3">{f.desc}</p>
+                    <div className="bg-white/5 border border-white/10 rounded text-xs text-zinc-500 px-3 py-1.5 inline-block font-mono">Example: {f.example}</div>
                   </div>
-                </div>
+                </ScrollReveal>
               ))}
             </div>
           </div>
@@ -304,7 +330,9 @@ export default function HomeClient({ initialMemories }: { initialMemories: Clien
         {/* WHO IS IT FOR */}
         <section className="py-32 px-6 border-y border-white/5">
           <div className="max-w-6xl mx-auto text-center">
-            <h2 className="text-3xl md:text-5xl font-semibold mb-16 tracking-tight">Designed for every life.</h2>
+            <ScrollReveal>
+              <h2 className="text-3xl md:text-5xl font-semibold mb-16 tracking-tight">Designed for every life.</h2>
+            </ScrollReveal>
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {[
                 { title: "Students", desc: "Archive college years, late nights, and milestones." },
@@ -312,10 +340,10 @@ export default function HomeClient({ initialMemories }: { initialMemories: Clien
                 { title: "Creators", desc: "Store inspiration and behind-the-scenes moments." },
                 { title: "Couples", desc: "A private space for your shared journey." }
               ].map((persona, i) => (
-                <div key={i} className="bg-[#0A0A0A] p-8 rounded-2xl border border-white/5 text-left">
+                <ScrollReveal key={i} delay={0.1 + (i * 0.1)} className="bg-[#0A0A0A] p-8 rounded-2xl border border-white/5 text-left">
                   <h3 className="text-lg font-medium mb-2">{persona.title}</h3>
                   <p className="text-sm text-zinc-400">{persona.desc}</p>
-                </div>
+                </ScrollReveal>
               ))}
             </div>
           </div>
@@ -348,18 +376,52 @@ export default function HomeClient({ initialMemories }: { initialMemories: Clien
           </section>
         )}
 
+        {/* FAQ SECTION */}
+        <section className="py-32 px-6 bg-[#0A0A0A] border-y border-white/5">
+          <div className="max-w-4xl mx-auto">
+            <div className="text-center mb-16">
+              <ScrollReveal>
+                <h2 className="text-3xl md:text-5xl font-semibold mb-6 tracking-tight">Frequently Asked Questions</h2>
+              </ScrollReveal>
+              <ScrollReveal delay={0.1}>
+                <p className="text-zinc-400 text-lg">Everything you need to know about Memora and how it protects your data.</p>
+              </ScrollReveal>
+            </div>
+            <div className="space-y-6">
+              {[
+                { q: "Is my data truly private?", a: "Yes. Memora uses AES-256 end-to-end encryption. Your data is encrypted before it leaves your device, meaning not even our team can access your memories." },
+                { q: "What happens if I want to leave?", a: "Your memories are yours. You can export your entire vault in standard formats (ZIP, JSON, JPG) with a single click at any time." },
+                { q: "How is Memora different from standard cloud storage?", a: "Those platforms are built to store everything—including receipts, screenshots, and duplicates. Memora is purpose-built strictly for curated, meaningful memories, enriched with context and stories." },
+                { q: "Do you compress my photos?", a: "No. We believe in preserving the exact quality of your memories. Original files are stored securely without compression." },
+                { q: "Is there a free tier?", a: "We offer a 14-day free trial so you can experience the platform. After that, we charge a simple flat fee. We never sell ads, and we never sell your data." },
+              ].map((faq, i) => (
+                <ScrollReveal key={i} delay={0.2 + (i * 0.1)} className="bg-[#050505] border border-white/5 p-6 rounded-2xl">
+                  <h3 className="text-lg font-medium text-white mb-2">{faq.q}</h3>
+                  <p className="text-zinc-400 text-sm leading-relaxed">{faq.a}</p>
+                </ScrollReveal>
+              ))}
+            </div>
+          </div>
+        </section>
+
         {/* FINAL CTA */}
         <section className="py-40 px-6 bg-gradient-to-b from-[#020202] to-black relative overflow-hidden">
           <div className="absolute inset-0 bg-[url('/noise.png')] opacity-20 mix-blend-overlay" />
           <div className="max-w-3xl mx-auto text-center relative z-10">
-            <h2 className="text-4xl md:text-6xl font-semibold mb-6 tracking-tight">Ready to preserve your legacy?</h2>
-            <p className="text-xl text-zinc-400 mb-10">Join thousands of users who trust Memora with their most precious moments.</p>
-            <button 
-              onClick={() => setIsUploadOpen(true)}
-              className="px-10 py-5 bg-white text-black rounded-full font-medium text-lg transition-transform hover:scale-105"
-            >
-              Start capturing now
-            </button>
+            <ScrollReveal>
+              <h2 className="text-4xl md:text-6xl font-semibold mb-6 tracking-tight">Ready to preserve your legacy?</h2>
+            </ScrollReveal>
+            <ScrollReveal delay={0.1}>
+              <p className="text-xl text-zinc-400 mb-10">Join thousands of users who trust Memora with their most precious moments.</p>
+            </ScrollReveal>
+            <ScrollReveal delay={0.2}>
+              <button 
+                onClick={() => setIsUploadOpen(true)}
+                className="px-10 py-5 bg-white text-black rounded-full font-medium text-lg transition-transform hover:scale-105"
+              >
+                Start your vault
+              </button>
+            </ScrollReveal>
           </div>
         </section>
 

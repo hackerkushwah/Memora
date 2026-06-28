@@ -15,7 +15,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/features',
     '/how-it-works',
     '/why-memora',
-    '/faq'
+    '/faq',
+    '/security',
+    '/pricing',
+    '/roadmap',
+    '/changelog',
+    '/accessibility',
+    '/cookies'
   ].map((route) => ({
     url: `${baseUrl}${route}`,
     lastModified: new Date(),

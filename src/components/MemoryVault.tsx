@@ -13,28 +13,41 @@ interface Props {
 
 export function MemoryVault({ memories }: Props) {
   const [isUploadOpen, setIsUploadOpen] = useState(false);
+  const [isDemoMode, setIsDemoMode] = useState(false);
 
-  if (memories.length === 0) {
+  const demoMemories: ClientMemory[] = [
+    { id: "d1", title: "Our Wedding Day", description: "The most magical day of our lives. Surrounded by family and friends under the old oak tree.", category: "✨ Forever", imageUrls: ["/demo1.jpg"], thumbnailUrl: "", uploadedBy: "demo", date: "2026-06-28" },
+    { id: "d2", title: "Trip to Kyoto", description: "Walking through the bamboo forest at dawn. The light was incredible.", category: "✈️ Travel", imageUrls: ["/demo2.jpg"], thumbnailUrl: "", uploadedBy: "demo", date: "2026-06-28" },
+    { id: "d3", title: "College Graduation", description: "Four years of hard work finally paid off. Mom and Dad were so proud.", category: "🎓 College", imageUrls: ["/demo3.jpg"], thumbnailUrl: "", uploadedBy: "demo", date: "2026-06-28" },
+    { id: "d4", title: "First Apartment", description: "It's small and the heater barely works, but it's ours.", category: "📸 Moments", imageUrls: ["/demo4.jpg"], thumbnailUrl: "", uploadedBy: "demo", date: "2026-06-28" }
+  ];
+
+  if (memories.length === 0 && !isDemoMode) {
     return (
       <div className="w-full max-w-5xl mx-auto pt-12 pb-24 px-6">
         <div className="text-center mb-16">
           <h2 className="text-3xl font-semibold mb-4 tracking-tight">Welcome to Memora</h2>
-          <p className="text-zinc-400 max-w-lg mx-auto">Your vault is currently empty. Start building your digital legacy by capturing your first memory today.</p>
+          <p className="text-zinc-400 max-w-lg mx-auto">Your vault is currently empty. Start building your digital legacy by capturing your first memory today, or explore a demo vault.</p>
+        </div>
+
+        <div className="flex flex-col md:flex-row items-center justify-center gap-6 mb-16">
+          <button 
+            onClick={() => setIsUploadOpen(true)}
+            className="w-full md:w-auto px-8 py-4 bg-white text-black font-medium rounded-full hover:scale-105 transition-transform flex items-center justify-center gap-2"
+          >
+            <Plus className="w-5 h-5" />
+            Upload First Memory
+          </button>
+          <button 
+            onClick={() => setIsDemoMode(true)}
+            className="w-full md:w-auto px-8 py-4 bg-[#0A0A0A] border border-white/20 text-white font-medium rounded-full hover:bg-white/5 transition-colors flex items-center justify-center gap-2"
+          >
+            <Compass className="w-5 h-5" />
+            Explore Demo Vault
+          </button>
         </div>
 
         <div className="grid md:grid-cols-2 gap-6 mb-16">
-          {/* Create First Memory Card */}
-          <div 
-            onClick={() => setIsUploadOpen(true)}
-            className="group cursor-pointer bg-gradient-to-br from-white/10 to-white/5 border border-white/10 rounded-2xl p-8 flex flex-col items-center justify-center text-center min-h-[300px] hover:border-white/20 hover:bg-white/10 transition-all duration-300"
-          >
-            <div className="w-16 h-16 rounded-full bg-white text-black flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-              <Plus className="w-8 h-8" />
-            </div>
-            <h3 className="text-xl font-medium mb-2">Create new memory</h3>
-            <p className="text-sm text-zinc-400">Upload photos, write a journal entry, or save a milestone.</p>
-          </div>
-
           {/* Quick Start Guide */}
           <div className="bg-[#0A0A0A] border border-white/5 rounded-2xl p-8 flex flex-col justify-center min-h-[300px]">
             <h3 className="text-lg font-medium mb-6 flex items-center gap-2"><BookOpen className="w-5 h-5 text-zinc-400" /> Quick Start Guide</h3>
@@ -62,25 +75,12 @@ export function MemoryVault({ memories }: Props) {
               </li>
             </ul>
           </div>
-        </div>
 
-        {/* Example Memories Section */}
-        <div className="mt-20">
-          <div className="flex items-center gap-3 mb-8">
-            <Compass className="w-5 h-5 text-zinc-500" />
-            <h3 className="text-lg font-medium text-zinc-300">Inspiration</h3>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 opacity-60 grayscale hover:grayscale-0 transition-all duration-700">
-            {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="aspect-[4/5] rounded-xl border border-white/5 bg-white/5 flex items-center justify-center overflow-hidden relative">
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
-                <ImageIcon className="w-8 h-8 text-white/20 absolute z-10" />
-                <div className="absolute bottom-4 left-4 z-10">
-                  <div className="w-16 h-2 bg-white/20 rounded mb-2" />
-                  <div className="w-24 h-2 bg-white/10 rounded" />
-                </div>
-              </div>
-            ))}
+          <div className="bg-gradient-to-br from-blue-900/10 to-purple-900/10 border border-white/5 rounded-2xl p-8 flex flex-col justify-center min-h-[300px]">
+             <h3 className="text-lg font-medium mb-4">A blank canvas for your life.</h3>
+             <p className="text-zinc-400 text-sm leading-relaxed mb-6">Memora is designed to be intentional. There is no auto-sync cluttering your vault with screenshots and receipts. Every memory here is one you chose to preserve.</p>
+             <div className="w-full h-px bg-white/10 mb-6" />
+             <p className="text-zinc-500 text-xs uppercase tracking-widest font-semibold">Ready when you are.</p>
           </div>
         </div>
 
@@ -89,10 +89,24 @@ export function MemoryVault({ memories }: Props) {
     );
   }
 
+  const displayMemories = isDemoMode ? demoMemories : memories;
+
   return (
     <>
+      {isDemoMode && (
+        <div className="w-full bg-[#0A0A0A] border-b border-white/10 p-4 mb-8 flex flex-col sm:flex-row items-center justify-between px-6 rounded-xl">
+          <div className="flex items-center gap-3">
+            <div className="w-2 h-2 rounded-full bg-yellow-500 animate-pulse" />
+            <span className="text-sm font-medium text-zinc-300">You are viewing the Demo Vault</span>
+          </div>
+          <button onClick={() => setIsDemoMode(false)} className="text-sm text-zinc-400 hover:text-white mt-4 sm:mt-0 underline underline-offset-4">
+            Exit Demo
+          </button>
+        </div>
+      )}
+
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 px-4 sm:px-6">
-        {memories.map((memory, index) => (
+        {displayMemories.map((memory, index) => (
           <Link key={memory.id} href={`/memory/${memory.id}`} className="block group">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
