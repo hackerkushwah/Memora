@@ -83,7 +83,7 @@ export function HomeClient({ initialMemories }: { initialMemories: ClientMemory[
               <h1 className="font-serif text-5xl md:text-7xl lg:text-8xl leading-[1.1] tracking-tight mb-6">
                 Every memory deserves a place that <span className="italic text-white/80">lasts forever.</span>
               </h1>
-              <p className="text-lg md:text-xl text-[#B3B3B3] font-light leading-relaxed max-w-lg">
+              <p className="text-lg md:text-xl text-[#B3B3B3] font-light leading-loose max-w-lg">
                 Memora helps you preserve memories, organize your life, and rediscover meaningful moments with an intelligent digital memory vault.
               </p>
             </motion.div>
@@ -92,9 +92,9 @@ export function HomeClient({ initialMemories }: { initialMemories: ClientMemory[
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, delay: 0.2, ease: "easeOut" }}
-              className="flex flex-col sm:flex-row items-center gap-4 pt-4"
+              className="flex flex-col sm:flex-row items-center gap-6 pt-4 w-full"
             >
-              <button onClick={handleSignIn} className="w-full sm:w-auto bg-white text-black px-8 py-4 rounded-full font-medium hover:bg-white/90 transition-all text-center flex items-center justify-center gap-2">
+              <button onClick={handleSignIn} className="w-full sm:w-auto bg-[#D4AF37] text-black px-8 py-4 rounded-full font-bold hover:bg-[#F3D56D] transition-all text-center flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(212,175,55,0.4)]">
                 Get Started Free <ArrowRight className="w-4 h-4" />
               </button>
               <button onClick={() => document.getElementById('vault')?.scrollIntoView({ behavior: 'smooth' })} className="w-full sm:w-auto bg-white/5 border border-white/10 hover:bg-white/10 text-white px-8 py-4 rounded-full font-medium transition-all backdrop-blur-md text-center flex items-center justify-center gap-2">
@@ -438,9 +438,9 @@ export function HomeClient({ initialMemories }: { initialMemories: ClientMemory[
             <p className="text-xl text-[#B3B3B3]">Join Memora and ensure your stories are never lost.</p>
           </ScrollReveal>
           <ScrollReveal delay={0.2}>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-8">
-              <button onClick={handleSignIn} className="w-full sm:w-auto bg-white text-black px-10 py-5 rounded-full font-bold hover:bg-white/90 transition-all shadow-[0_0_20px_rgba(255,255,255,0.2)]">
-                Get Started Free
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-6 pt-8 w-full">
+              <button onClick={handleSignIn} className="w-full sm:w-auto bg-[#D4AF37] text-black px-10 py-5 rounded-full font-bold hover:bg-[#F3D56D] transition-all text-center flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(212,175,55,0.4)]">
+                Get Started Free <ArrowRight className="w-5 h-5" />
               </button>
             </div>
           </ScrollReveal>

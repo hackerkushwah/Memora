@@ -9,12 +9,12 @@ import { useState, useEffect } from "react";
 
 const navLinks = [
   { label: "Home", href: "/" },
-  { label: "Features", href: "/features" },
-  { label: "How It Works", href: "/how-it-works" },
-  { label: "Resources", href: "/resources" },
+  { label: "Product Features", href: "/features" },
+  { label: "How Memora Works", href: "/how-it-works" },
+  { label: "Resource Center", href: "/resources" },
   { label: "FAQ", href: "/faq" },
-  { label: "About", href: "/about" },
-  { label: "Contact", href: "/contact" },
+  { label: "Our Story", href: "/about" },
+  { label: "Contact Us", href: "/contact" },
 ];
 
 export function Navbar({ onUploadClick }: { onUploadClick?: () => void }) {
