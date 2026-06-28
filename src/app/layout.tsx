@@ -19,7 +19,7 @@ const cursive = Dancing_Script({
   subsets: ["latin"],
 });
 
-import { Footer } from "@/components/Footer";
+
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://memora.app"),
@@ -92,7 +92,6 @@ export default function RootLayout({
       </head>
       <body suppressHydrationWarning className="min-h-full flex flex-col bg-[#050505] text-[#FFFFFF] selection:bg-white/20 selection:text-white">
         {children}
-        <Footer />
       </body>
     </html>
   );

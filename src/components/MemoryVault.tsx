@@ -33,14 +33,14 @@ export function MemoryVault({ memories }: Props) {
         <div className="flex flex-col md:flex-row items-center justify-center gap-6 mb-16">
           <button 
             onClick={() => setIsUploadOpen(true)}
-            className="w-full md:w-auto px-8 py-4 bg-white text-black font-medium rounded-full hover:scale-105 transition-transform flex items-center justify-center gap-2"
+            className="w-full md:w-auto px-8 py-4 bg-[#D4AF37] text-black font-medium rounded-full hover:bg-white hover:scale-105 transition-all flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(212,175,55,0.2)]"
           >
             <Plus className="w-5 h-5" />
             Upload First Memory
           </button>
           <button 
             onClick={() => setIsDemoMode(true)}
-            className="w-full md:w-auto px-8 py-4 bg-[#0A0A0A] border border-white/20 text-white font-medium rounded-full hover:bg-white/5 transition-colors flex items-center justify-center gap-2"
+            className="w-full md:w-auto px-8 py-4 bg-[#0A0A0A] border border-white/10 text-white font-medium rounded-full hover:bg-white/5 transition-colors flex items-center justify-center gap-2"
           >
             <Compass className="w-5 h-5" />
             Explore Demo Vault
@@ -112,9 +112,9 @@ export function MemoryVault({ memories }: Props) {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.05, duration: 0.5, ease: "easeOut" }}
-              className="relative cursor-pointer flex flex-col h-full"
+              className="relative cursor-pointer flex flex-col h-full group"
             >
-              <div className="relative aspect-[4/5] w-full overflow-hidden rounded-2xl border border-white/5 bg-[#0A0A0A]">
+              <div className="relative aspect-[4/5] w-full overflow-hidden rounded-2xl border border-white/5 bg-[#0A0A0A] transition-all duration-500 ease-out group-hover:-translate-y-2 group-hover:shadow-[0_20px_40px_-15px_rgba(255,255,255,0.1)] group-hover:border-white/10">
                 {memory.imageUrls && memory.imageUrls.length > 1 && (
                   <div className="absolute top-3 right-3 z-10 bg-black/60 backdrop-blur-md text-white text-[10px] uppercase font-bold px-2 py-1 rounded border border-white/10">
                     +{memory.imageUrls.length - 1}
