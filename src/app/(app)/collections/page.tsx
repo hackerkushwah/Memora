@@ -1,6 +1,6 @@
 import { getMyMemories } from "@/actions/memory-actions";
 import { Folder, Image as ImageIcon } from "lucide-react";
-import { MemoryVault } from "@/components/MemoryVault";
+import { CollectionsClient } from "@/components/CollectionsClient";
 
 export const dynamic = "force-dynamic";
 
@@ -25,7 +25,7 @@ export default async function CollectionsPage() {
       name,
       count: items.length,
       cover: coverMemory?.thumbnailUrl || null,
-      memories: items
+      memories: items.map(({ ownerEmail, ...safe }: any) => safe)
     };
   });
 
@@ -45,19 +45,7 @@ export default async function CollectionsPage() {
           <p className="text-white/40 max-w-sm">When you upload memories with tags, they will automatically be grouped here.</p>
         </div>
       ) : (
-        <div className="space-y-20">
-          {collections.map((collection) => (
-            <section key={collection.name} className="space-y-6">
-              <div className="flex items-end justify-between border-b border-white/10 pb-4">
-                <div>
-                  <h2 className="text-2xl font-serif text-white">{collection.name}</h2>
-                  <p className="text-white/50 text-sm mt-1">{collection.count} {collection.count === 1 ? 'memory' : 'memories'}</p>
-                </div>
-              </div>
-              <MemoryVault memories={collection.memories.map(({ ownerEmail, ...safe }: any) => safe)} />
-            </section>
-          ))}
-        </div>
+        <CollectionsClient collections={collections} />
       )}
     </div>
   );
