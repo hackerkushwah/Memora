@@ -370,22 +370,7 @@ export function HomeClient({ initialMemories }: { initialMemories: ClientMemory[
         </div>
       </section>
 
-      {/* LIVE DEMO: VAULT */}
-      <section id="vault" className="w-full py-32 bg-[#050505]">
-        <div className="max-w-7xl mx-auto px-6">
-          <ScrollReveal>
-            <div className="text-center mb-16">
-              <h2 className="font-serif text-4xl md:text-5xl mb-6">Interactive Preview</h2>
-              <p className="text-[#B3B3B3]">Try the interface right here. No sign-up required for the demo.</p>
-            </div>
-          </ScrollReveal>
-          <ScrollReveal delay={0.2}>
-            <div className="rounded-3xl overflow-hidden border border-white/10 bg-[#0A0A0A]">
-              <MemoryVault memories={initialMemories} />
-            </div>
-          </ScrollReveal>
-        </div>
-      </section>
+
 
       {/* 9. FAQ */}
       <section className="w-full py-32 bg-[#111111]">

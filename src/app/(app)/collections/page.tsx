@@ -1,11 +1,11 @@
-import { getMemories } from "@/actions/memory-actions";
+import { getMyMemories } from "@/actions/memory-actions";
 import { Folder, Image as ImageIcon } from "lucide-react";
 import { MemoryVault } from "@/components/MemoryVault";
 
 export const dynamic = "force-dynamic";
 
 export default async function CollectionsPage() {
-  const memories = await getMemories();
+  const memories = await getMyMemories();
   
   // Group memories by category
   const categoriesMap = new Map<string, typeof memories>();
@@ -54,7 +54,7 @@ export default async function CollectionsPage() {
                   <p className="text-white/50 text-sm mt-1">{collection.count} {collection.count === 1 ? 'memory' : 'memories'}</p>
                 </div>
               </div>
-              <MemoryVault memories={collection.memories.map(({ passwordHash, ownerEmail, ...safe }) => safe)} />
+              <MemoryVault memories={collection.memories.map(({ ownerEmail, ...safe }: any) => safe)} />
             </section>
           ))}
         </div>

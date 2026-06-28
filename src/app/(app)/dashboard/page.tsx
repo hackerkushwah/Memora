@@ -1,9 +1,9 @@
-import { getMemories } from "@/actions/memory-actions";
+import { getMyMemories } from "@/actions/memory-actions";
 import { MemoryVault } from "@/components/MemoryVault";
 
 export default async function DashboardPage() {
-  const memories = await getMemories();
-  const safeMemories = memories.map(({ passwordHash, ownerEmail, ...safe }) => safe);
+  const memories = await getMyMemories();
+  const safeMemories = memories.map(({ ownerEmail, ...safe }: any) => safe);
 
   return (
     <div className="space-y-10">

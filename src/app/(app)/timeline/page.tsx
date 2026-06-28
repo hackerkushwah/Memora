@@ -1,11 +1,11 @@
-import { getMemories } from "@/actions/memory-actions";
+import { getMyMemories } from "@/actions/memory-actions";
 
 import { Image as ImageIcon, Calendar, Clock } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
 export default async function TimelinePage() {
-  const memories = await getMemories();
+  const memories = await getMyMemories();
   
   // Sort memories by date descending
   const sortedMemories = [...memories].sort((a, b) => {
