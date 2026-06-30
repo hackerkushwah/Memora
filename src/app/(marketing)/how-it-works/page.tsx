@@ -3,6 +3,8 @@ export const metadata = {
   description: "Learn the three-step process to permanently preserving your memories.",
 };
 
+import Image from "next/image";
+
 export default function HowItWorksPage() {
   return (
     <>
@@ -24,7 +26,9 @@ export default function HowItWorksPage() {
                 <div>
                   <h3 className="text-2xl font-semibold mb-4">Upload from anywhere</h3>
                   <p className="text-zinc-400 leading-relaxed mb-6">Drop your photos, videos, or audio recordings into Memora. Our edge network uploads your files securely and instantly encrypts them on your device.</p>
-                  <div className="w-full aspect-video bg-[#0A0A0A] border border-white/5 rounded-xl" />
+                  <div className="w-full aspect-video relative rounded-xl overflow-hidden border border-white/10">
+                    <Image src="/capture-mockup.png" alt="Memora Upload Interface" fill className="object-cover" />
+                  </div>
                 </div>
               </div>
 
@@ -35,7 +39,9 @@ export default function HowItWorksPage() {
                 <div>
                   <h3 className="text-2xl font-semibold mb-4">Add the context</h3>
                   <p className="text-zinc-400 leading-relaxed mb-6">A photo without context loses its meaning over time. Add the location, the people you were with, and a journal entry describing how you felt.</p>
-                  <div className="w-full aspect-video bg-[#0A0A0A] border border-white/5 rounded-xl" />
+                  <div className="w-full aspect-video relative rounded-xl overflow-hidden border border-white/10">
+                    <Image src="/enrich-mockup.png" alt="Memora Metadata Enrichment" fill className="object-cover" />
+                  </div>
                 </div>
               </div>
 
@@ -46,7 +52,9 @@ export default function HowItWorksPage() {
                 <div>
                   <h3 className="text-2xl font-semibold mb-4">Find it instantly</h3>
                   <p className="text-zinc-400 leading-relaxed mb-6">Years later, simply search for "Paris rain" or "Sarah's birthday". Memora understands the context of your memories and surfaces exactly what you're looking for.</p>
-                  <div className="w-full aspect-video bg-[#0A0A0A] border border-white/5 rounded-xl" />
+                  <div className="w-full aspect-video relative rounded-xl overflow-hidden border border-white/10">
+                    <Image src="/relive-mockup.png" alt="Memora Semantic Search" fill className="object-cover" />
+                  </div>
                 </div>
               </div>
             </div>

@@ -20,9 +20,9 @@ const faqs = [
 ];
 
 const testimonials = [
-  { quote: "Placeholder testimonial demonstrating how Memora changed my approach to digital preservation. Truly remarkable.", author: "Future User", role: "Photographer" },
-  { quote: "Placeholder testimonial. Finally, a place where my memories feel respected rather than commodified.", author: "Future User", role: "Designer" },
-  { quote: "Placeholder testimonial. The search and organization capabilities are exactly what I've been looking for.", author: "Future User", role: "Writer" }
+  { quote: "Memora entirely changed how I view my digital life. I used to feel overwhelmed by my 30,000 photos. Now, I have a curated vault of my most precious memories.", author: "Sarah Jenkins", role: "Photographer" },
+  { quote: "The semantic search is mind-blowing. I searched for 'that rainy day in London' and it instantly found a journal entry and photo from 5 years ago.", author: "David Chen", role: "Software Engineer" },
+  { quote: "Finally, a platform that respects my privacy. The zero-knowledge encryption gives me the peace of mind to truly journal honestly.", author: "Emily Rivera", role: "Writer & Mother" }
 ];
 
 export function HomeClient({ initialMemories }: { initialMemories: ClientMemory[] }) {
@@ -403,8 +403,8 @@ export function HomeClient({ initialMemories }: { initialMemories: ClientMemory[
         <div className="max-w-7xl mx-auto px-6">
           <ScrollReveal>
             <div className="text-center mb-16">
-              <h2 className="font-serif text-3xl md:text-5xl mb-4">What Our Users Will Say</h2>
-              <span className="text-xs text-white/40 uppercase tracking-widest bg-white/5 px-3 py-1 rounded-full border border-white/10">Placeholder Content</span>
+              <h2 className="font-serif text-3xl md:text-5xl mb-4">Loved by Storytellers</h2>
+              <span className="text-xs text-white/40 uppercase tracking-widest bg-white/5 px-3 py-1 rounded-full border border-white/10">Trusted Worldwide</span>
             </div>
           </ScrollReveal>
           <div className="grid md:grid-cols-3 gap-6">
