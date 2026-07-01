@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { ArrowRight, Lock, Search, Folder, Shield, Zap, Heart, CheckCircle2, Play, ChevronDown, Clock, Brain, Camera, Layout, Crown } from "lucide-react";
@@ -25,7 +26,17 @@ const testimonials = [
   { quote: "Finally, a platform that respects my privacy. The zero-knowledge encryption gives me the peace of mind to truly journal honestly.", author: "Emily Rivera", role: "Writer & Mother" }
 ];
 
+const personaContent: Record<string, string> = {
+  Students: "Organize lecture notes, capture fleeting study insights, and build a lifelong knowledge base without the clutter of traditional apps.",
+  Professionals: "Securely store meeting summaries, project milestones, and career achievements with zero-knowledge encryption for complete privacy.",
+  Families: "Preserve precious family milestones, record audio memories of grandparents, and pass down a beautifully organized digital legacy.",
+  Creators: "Build a second brain of inspiration, capture raw ideas on the go, and easily retrieve past concepts using powerful semantic search.",
+  Researchers: "Log daily observations, securely maintain sensitive field notes, and connect disparate ideas over time with intuitive organization."
+};
+
 export function HomeClient({ initialMemories }: { initialMemories: ClientMemory[] }) {
+  const [activePersona, setActivePersona] = useState<string>("Students");
+  
   const handleSignIn = async () => {
     await supabaseClient.auth.signInWithOAuth({
       provider: "google",
@@ -293,16 +304,31 @@ export function HomeClient({ initialMemories }: { initialMemories: ClientMemory[
           <ScrollReveal>
             <h2 className="font-serif text-3xl md:text-5xl text-center mb-16">Who is Memora for?</h2>
           </ScrollReveal>
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-8">
-            {["Students", "Professionals", "Families", "Creators", "Researchers"].map((persona, i) => (
-              <ScrollReveal key={persona} delay={0.1 + (i * 0.1)} className="flex flex-col items-center justify-center text-center space-y-4 group">
-                <div className="w-20 h-20 rounded-full bg-[#111111] border border-white/10 flex items-center justify-center group-hover:border-white/30 transition-colors">
-                  <UserIcon className="w-8 h-8 text-white/40 group-hover:text-white transition-colors" />
-                </div>
-                <span className="font-medium text-white/70 group-hover:text-white transition-colors">{persona}</span>
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-8 mb-16">
+            {Object.keys(personaContent).map((persona, i) => (
+              <ScrollReveal key={persona} delay={0.1 + (i * 0.1)} className="flex flex-col items-center justify-center text-center space-y-4">
+                <button 
+                  onClick={() => setActivePersona(persona)}
+                  className="group flex flex-col items-center focus:outline-none"
+                  aria-pressed={activePersona === persona}
+                >
+                  <div className={`w-20 h-20 rounded-full bg-[#111111] border flex items-center justify-center transition-all duration-300 ${activePersona === persona ? 'border-[#D4AF37] shadow-[0_0_15px_rgba(212,175,55,0.3)] scale-110' : 'border-white/10 group-hover:border-white/30'}`}>
+                    <UserIcon className={`w-8 h-8 transition-colors duration-300 ${activePersona === persona ? 'text-[#D4AF37]' : 'text-white/40 group-hover:text-white'}`} />
+                  </div>
+                  <span className={`font-medium transition-colors duration-300 mt-4 ${activePersona === persona ? 'text-[#D4AF37]' : 'text-white/70 group-hover:text-white'}`}>{persona}</span>
+                </button>
               </ScrollReveal>
             ))}
           </div>
+          
+          <ScrollReveal className="max-w-3xl mx-auto text-center">
+            <div className="glassmorphism p-8 md:p-12 rounded-3xl border border-white/10 min-h-[160px] flex items-center justify-center transition-all duration-500 relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
+              <p className="text-xl md:text-2xl text-white/90 leading-relaxed font-serif relative z-10" key={activePersona}>
+                {personaContent[activePersona]}
+              </p>
+            </div>
+          </ScrollReveal>
         </div>
       </section>
 
